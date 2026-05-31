@@ -1,7 +1,8 @@
 function animateForjaPage(event) {
   if (!window.gsap) return;
 
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const perf = window.forjaPerformance || {};
+  const reducedMotion = perf.reducedMotion ?? window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reducedMotion) return;
 
   const firstRun = !window.__forjaIntroAnimated;
@@ -14,7 +15,7 @@ function animateForjaPage(event) {
   }
 
   const cards = gsap.utils.toArray("[data-gsap-card], .pathCard, .homePath, .flowStep, .lorePanel, .stepCard, .orderStep, .sparkCard, .infoListGrid div, .packageCompareBox");
-  cards.forEach((card, index) => {
+  cards.slice(0, (window.forjaPerformance?.gsapCardLimit || cards.length)).forEach((card, index) => {
     if (card.dataset.forjaAnimated === "true") return;
     card.dataset.forjaAnimated = "true";
 

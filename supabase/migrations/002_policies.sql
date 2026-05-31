@@ -8,14 +8,19 @@ alter table public.order_messages enable row level security;
 alter table public.order_deliveries enable row level security;
 
 create or replace function public.is_forja_admin()
-returns boolean as $$
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
   select
     lower(coalesce(auth.jwt() ->> 'email', '')) = 'forjanarrativa5790@gmail.com'
     or exists (
       select 1 from public.admin_users
       where user_id = auth.uid()
     );
-$$ language sql security definer stable;
+$$;
 
 -- Profiles
 drop policy if exists "profiles_select_own_or_admin" on public.profiles;
@@ -71,15 +76,25 @@ using (
 );
 
 drop policy if exists "messages_insert_order_owner_or_admin" on public.order_messages;
-create policy "messages_insert_order_owner_or_admin"
+drop policy if exists "messages_insert_client_owner" on public.order_messages;
+create policy "messages_insert_client_owner"
 on public.order_messages for insert
 with check (
-  public.is_forja_admin()
-  or exists (
+  sender_role = 'cliente'
+  and user_id = auth.uid()
+  and exists (
     select 1 from public.orders
     where orders.id = order_messages.order_id
     and orders.user_id = auth.uid()
   )
+);
+
+drop policy if exists "messages_insert_admin" on public.order_messages;
+create policy "messages_insert_admin"
+on public.order_messages for insert
+with check (
+  sender_role = 'admin'
+  and public.is_forja_admin()
 );
 
 -- Deliveries

@@ -50,6 +50,31 @@ function formatDate(dateValue) {
   });
 }
 
+async function isForjaAdminSession(session) {
+  if (!session?.user) return false;
+  if (isOwnerAdminEmail(session.user.email)) return true;
+
+  try {
+    const { data, error } = await forjaDB.rpc("is_forja_admin");
+    if (!error && data === true) return true;
+  } catch (error) {
+    console.warn("RPC is_forja_admin indisponível. Tentando fallback local.", error);
+  }
+
+  try {
+    const { data, error } = await forjaDB
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", session.user.id)
+      .maybeSingle();
+
+    return !error && !!data;
+  } catch (error) {
+    console.warn("Fallback admin_users falhou.", error);
+    return false;
+  }
+}
+
 async function requireAdminAccess() {
   loadingBox.style.display = "block";
   loadingBox.textContent = "Verificando acesso ao Painel da Forja...";
@@ -63,23 +88,11 @@ async function requireAdminAccess() {
 
   currentUser = sessionData.session.user;
 
-  if (isOwnerAdminEmail(currentUser.email)) {
-    return true;
-  }
+  const isAdmin = await isForjaAdminSession(sessionData.session);
 
-  const { data, error } = await forjaDB
-    .from("admin_users")
-    .select("user_id")
-    .eq("user_id", currentUser.id)
-    .maybeSingle();
-
-  if (error || !data) {
-    console.error(error);
-
-    await forjaDB.auth.signOut();
-
-    alert("Acesso negado. Este usuário não é administrador da Forja.");
-    window.location.href = "login.html";
+  if (!isAdmin) {
+    alert("Acesso negado. Esta sala é reservada para administradores da Forja.");
+    window.location.href = "index.html";
     return false;
   }
 
@@ -115,6 +128,35 @@ function renderStatusButtons(order) {
     const payment = preset.payment || order.payment_status || "não pago";
     return `<button onclick="updateOrderStatus('${order.id}', '${preset.status}', '${payment}')">${preset.label}</button>`;
   }).join("");
+}
+
+function renderDeliveryBox(order) {
+  const deliveryUrl = escapeHTML(order.delivery_url || "");
+  const deliveryNote = escapeHTML(order.delivery_note || "");
+
+  return `
+    <div class="orderDeliveryZone">
+      <div class="deliveryHeader">
+        <strong>Entrega final</strong>
+        <span>Preencha quando o resultado estiver pronto. O cliente verá isso em Meus Pedidos.</span>
+      </div>
+
+      <label>
+        Link da entrega
+        <input id="deliveryUrl-${order.id}" type="url" value="${deliveryUrl}" placeholder="https://..." />
+      </label>
+
+      <label>
+        Observação da entrega
+        <textarea id="deliveryNote-${order.id}" rows="3" placeholder="Mensagem curta para o cliente...">${deliveryNote}</textarea>
+      </label>
+
+      <div class="deliveryActions">
+        <button type="button" onclick="saveOrderDelivery('${order.id}', false)">Salvar entrega</button>
+        <button type="button" onclick="saveOrderDelivery('${order.id}', true)">Salvar e marcar entregue</button>
+      </div>
+    </div>
+  `;
 }
 
 function renderDangerActions(order) {
@@ -203,6 +245,8 @@ function renderOrders() {
           ${renderStatusButtons(order)}
         </div>
 
+        ${renderDeliveryBox(order)}
+
         <div class="orderDangerZone">
           <div>
             <strong>Zona de limpeza</strong>
@@ -246,6 +290,43 @@ async function loadOrders() {
   loadingBox.style.display = "none";
 
   renderOrders();
+}
+
+async function saveOrderDelivery(orderId, markDelivered) {
+  const urlInput = document.getElementById(`deliveryUrl-${orderId}`);
+  const noteInput = document.getElementById(`deliveryNote-${orderId}`);
+
+  if (!urlInput || !noteInput) {
+    alert("Campos de entrega não encontrados. Atualize o painel e tente novamente.");
+    return;
+  }
+
+  const deliveryUrl = urlInput.value.trim();
+  const deliveryNote = noteInput.value.trim();
+
+  const updatePayload = {
+    delivery_url: deliveryUrl || null,
+    delivery_note: deliveryNote || null
+  };
+
+  if (markDelivered) {
+    updatePayload.status = "entregue";
+    updatePayload.payment_status = "pago";
+  }
+
+  const { error } = await forjaDB
+    .from("orders")
+    .update(updatePayload)
+    .eq("id", orderId);
+
+  if (error) {
+    console.error(error);
+    alert("Erro ao salvar entrega. Rode a migration 006 da versão 0.4.0 no Supabase.");
+    return;
+  }
+
+  await loadOrders();
+  alert(markDelivered ? "Entrega salva e pedido marcado como entregue." : "Entrega salva.");
 }
 
 async function updateOrderStatus(orderId, newStatus, newPaymentStatus) {
@@ -399,7 +480,9 @@ async function logout() {
 }
 
 function createEmber() {
-  if (!embers) return;
+  const perf = window.forjaPerformance || {};
+  if (!embers || perf.reducedMotion) return;
+  if (embers.children.length >= (perf.emberLimit || 14)) return;
 
   const ember = document.createElement("span");
   ember.className = "ember";
@@ -432,9 +515,10 @@ showArchivedOrdersBtn.addEventListener("click", () => setStatusFilter("arquivado
 clearFiltersBtn.addEventListener("click", clearAdminFilters);
 deleteTestOrdersBtn.addEventListener("click", deleteAllTestOrders);
 
-setInterval(createEmber, 300);
+const perf = window.forjaPerformance || {};
+setInterval(createEmber, perf.emberInterval || 360);
 
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < (perf.initialEmbers || 12); i += 1) {
   createEmber();
 }
 

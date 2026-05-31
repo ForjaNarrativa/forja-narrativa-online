@@ -1,12 +1,13 @@
 const forgeCanvas = document.getElementById("forgeCanvas");
-const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
-const tinyScreen = window.innerWidth < 520;
+const perf = window.forjaPerformance || {};
+const reducedMotion = perf.reducedMotion ?? window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const coarsePointer = perf.coarsePointer ?? window.matchMedia("(pointer: coarse)").matches;
+const tinyScreen = perf.tinyScreen ?? window.innerWidth < 520;
 
 if (forgeCanvas && !reducedMotion) {
   const ctx = forgeCanvas.getContext("2d");
   const particles = [];
-  const maxParticles = tinyScreen ? 12 : (coarsePointer || window.innerWidth < 720 ? 20 : 48);
+  const maxParticles = perf.canvasParticles ?? (tinyScreen ? 12 : (coarsePointer || window.innerWidth < 720 ? 20 : 48));
   let animationFrameId = null;
 
   function resizeCanvas() {

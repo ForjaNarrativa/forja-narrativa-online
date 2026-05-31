@@ -175,3 +175,21 @@ Mudanças:
 - Adicionado um “Portal de pedido” final com CTA para começar pedido ou ver pedidos já enviados.
 - `css/pedidos.css` recebeu a identidade visual nova da página, com efeitos dourados/roxos, contrato, trilha de etapas, cards e responsividade.
 - `js/animations/forja-gsap.js` foi atualizado para animar os novos blocos da página.
+
+
+## Versão 0.4.0 — Temperagem da Forja
+
+Foco: segurança, fluxo final e preparação para testes reais.
+
+- `package.json` atualizado para `0.4.0`.
+- Login admin agora verifica se a sessão é realmente admin antes de redirecionar para `admin.html`.
+- Cliente comum que entra em `login.html` não é mais deslogado automaticamente; recebe aviso de área reservada.
+- Sala do Criador recebeu campos de entrega final por pedido: link e observação.
+- `meus-pedidos.html` passa a exibir observação de entrega quando existir.
+- Criada migration `006_0_4_0_security_flow.sql` com:
+  - coluna `delivery_note` em `orders`;
+  - recriação segura de `is_forja_admin()` com `set search_path = public`;
+  - policy de chat futuro impedindo cliente de inserir mensagem como `admin`;
+  - reforço de policies para entregas.
+- Criado `js/utils/performance.js` para modo mobile leve automático.
+- Canvas, brasas e GSAP agora respeitam `forjaPerformance` para reduzir efeitos em celular fraco, telas pequenas e preferência de movimento reduzido.

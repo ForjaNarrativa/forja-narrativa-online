@@ -13,18 +13,51 @@ function isOwnerAdminEmail(email) {
   return OWNER_ADMIN_EMAILS.includes(normalizeEmail(email));
 }
 
-
 function setLoginMessage(text, type) {
   loginMessage.textContent = text;
   loginMessage.className = `loginMessage ${type}`;
 }
 
+async function isForjaAdminSession(session) {
+  if (!session?.user) return false;
+  if (isOwnerAdminEmail(session.user.email)) return true;
+
+  try {
+    const { data, error } = await forjaDB.rpc("is_forja_admin");
+    if (!error && data === true) return true;
+  } catch (error) {
+    console.warn("RPC is_forja_admin indisponível. Tentando fallback local.", error);
+  }
+
+  try {
+    const { data, error } = await forjaDB
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", session.user.id)
+      .maybeSingle();
+
+    return !error && !!data;
+  } catch (error) {
+    console.warn("Fallback admin_users falhou.", error);
+    return false;
+  }
+}
+
 async function checkAlreadyLogged() {
   const { data } = await forjaDB.auth.getSession();
 
-  if (data.session) {
+  if (!data.session) return;
+
+  const isAdmin = await isForjaAdminSession(data.session);
+
+  if (isAdmin) {
     window.location.href = "admin.html";
+    return;
   }
+
+  setLoginMessage("Você já está logado em uma conta de cliente. Esta entrada é reservada para a Sala do Criador.", "error");
+  loginBtn.disabled = true;
+  loginBtn.textContent = "Área reservada";
 }
 
 loginForm.addEventListener("submit", async (event) => {
@@ -42,7 +75,7 @@ loginForm.addEventListener("submit", async (event) => {
   loginBtn.textContent = "Abrindo a Forja...";
   setLoginMessage("", "");
 
-  const { error } = await forjaDB.auth.signInWithPassword({
+  const { data, error } = await forjaDB.auth.signInWithPassword({
     email,
     password
   });
@@ -55,6 +88,15 @@ loginForm.addEventListener("submit", async (event) => {
     return;
   }
 
+  const isAdmin = await isForjaAdminSession(data.session);
+
+  if (!isAdmin) {
+    setLoginMessage("Login feito, mas essa conta não tem acesso à Sala do Criador. Volte ao site para usar a área de cliente.", "error");
+    loginBtn.disabled = false;
+    loginBtn.textContent = "Entrada reservada";
+    return;
+  }
+
   setLoginMessage("Acesso liberado. Entrando...", "success");
 
   setTimeout(() => {
@@ -63,7 +105,9 @@ loginForm.addEventListener("submit", async (event) => {
 });
 
 function createEmber() {
-  if (!embers) return;
+  const perf = window.forjaPerformance || {};
+  if (!embers || perf.reducedMotion) return;
+  if (embers.children.length >= (perf.emberLimit || 14)) return;
 
   const ember = document.createElement("span");
   ember.className = "ember";
@@ -86,10 +130,8 @@ function createEmber() {
   }, (duration + delay) * 1000);
 }
 
-setInterval(createEmber, 300);
-
-for (let i = 0; i < 20; i++) {
-  createEmber();
-}
+const perf = window.forjaPerformance || {};
+setInterval(createEmber, perf.emberInterval || 360);
+for (let i = 0; i < (perf.initialEmbers || 12); i += 1) createEmber();
 
 checkAlreadyLogged();

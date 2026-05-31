@@ -1,7 +1,9 @@
 const embers = document.getElementById("embers");
 
 function createEmber() {
-  if (!embers) return;
+  const perf = window.forjaPerformance || {};
+  if (!embers || perf.reducedMotion) return;
+  if (embers.children.length >= (perf.emberLimit || 14)) return;
 
   const ember = document.createElement("span");
   ember.className = "ember";
@@ -24,8 +26,6 @@ function createEmber() {
   }, (duration + delay) * 1000);
 }
 
-setInterval(createEmber, 260);
-
-for (let i = 0; i < 22; i++) {
-  createEmber();
-}
+const perf = window.forjaPerformance || {};
+setInterval(createEmber, perf.emberInterval || 360);
+for (let i = 0; i < (perf.initialEmbers || 12); i += 1) createEmber();

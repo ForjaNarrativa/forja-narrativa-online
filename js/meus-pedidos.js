@@ -114,6 +114,7 @@ function renderOrders(orders) {
           <div>
             <span>Entrega final</span>
             ${order.delivery_url ? `<a href="${escapeHTML(order.delivery_url)}" target="_blank" rel="noopener">Abrir entrega</a>` : `<strong>Será exibida aqui futuramente</strong>`}
+            ${order.delivery_note ? `<p class="deliveryNote">${escapeHTML(order.delivery_note)}</p>` : ""}
           </div>
         </div>
       </article>
@@ -148,7 +149,9 @@ async function loadClientOrders() {
 }
 
 function createEmber() {
-  if (!embers) return;
+  const perf = window.forjaPerformance || {};
+  if (!embers || perf.reducedMotion) return;
+  if (embers.children.length >= (perf.emberLimit || 14)) return;
 
   const ember = document.createElement("span");
   ember.className = "ember";
@@ -171,11 +174,9 @@ function createEmber() {
   }, (duration + delay) * 1000);
 }
 
-setInterval(createEmber, 300);
-
-for (let i = 0; i < 20; i++) {
-  createEmber();
-}
+const perf = window.forjaPerformance || {};
+setInterval(createEmber, perf.emberInterval || 360);
+for (let i = 0; i < (perf.initialEmbers || 12); i += 1) createEmber();
 
 async function initClientOrdersPage() {
   const hasLogin = await requireClientLogin();

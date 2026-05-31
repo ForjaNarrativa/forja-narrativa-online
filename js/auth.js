@@ -197,7 +197,8 @@ authForm.addEventListener("submit", async (event) => {
 
 function createEmber() {
   if (!embers || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const maxEmbers = window.innerWidth < 720 ? 8 : 18;
+  const perf = window.forjaPerformance || {};
+  const maxEmbers = perf.emberLimit || (window.innerWidth < 720 ? 8 : 18);
   if (embers.children.length >= maxEmbers) return;
 
   const ember = document.createElement("span");
@@ -216,8 +217,9 @@ function createEmber() {
   setTimeout(() => ember.remove(), (duration + delay) * 1000);
 }
 
-setInterval(createEmber, window.innerWidth < 720 ? 700 : 360);
-for (let i = 0; i < (window.innerWidth < 720 ? 6 : 14); i++) createEmber();
+const perf = window.forjaPerformance || {};
+setInterval(createEmber, perf.emberInterval || (window.innerWidth < 720 ? 700 : 360));
+for (let i = 0; i < (perf.initialEmbers || (window.innerWidth < 720 ? 6 : 14)); i += 1) createEmber();
 
 showConfirmedMessageIfNeeded();
 checkAlreadyLogged();
