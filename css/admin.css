@@ -535,3 +535,320 @@
     width: 100%;
   }
 }
+
+
+/* 0.4.2 — Polimento interno: avisos, modal e estados bonitos */
+.forjaToastRoot {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 9999;
+  display: grid;
+  gap: 12px;
+  width: min(360px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.forjaToast {
+  pointer-events: auto;
+  position: relative;
+  overflow: hidden;
+  padding: 14px 44px 14px 16px;
+  border: 1px solid rgba(226, 184, 90, 0.34);
+  background:
+    radial-gradient(circle at 0 0, rgba(226, 184, 90, 0.16), transparent 34%),
+    rgba(8, 6, 10, 0.94);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.42), 0 0 24px rgba(226, 184, 90, 0.10);
+  animation: toastIn 0.24s ease both;
+  backdrop-filter: blur(10px);
+}
+
+.forjaToast::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--gold);
+  box-shadow: 0 0 14px rgba(226, 184, 90, 0.65);
+}
+
+.forjaToast.success::before { background: #d9b65d; }
+.forjaToast.error::before { background: #ff5a6b; box-shadow: 0 0 14px rgba(255, 90, 107, 0.55); }
+.forjaToast.warning::before { background: #b984ff; box-shadow: 0 0 14px rgba(185, 132, 255, 0.55); }
+
+.forjaToast.leaving {
+  animation: toastOut 0.18s ease both;
+}
+
+.forjaToast span {
+  display: block;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.68rem;
+  margin-bottom: 5px;
+}
+
+.forjaToast strong {
+  display: block;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.forjaToast p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.forjaToast button {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.forjaModalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
+  animation: modalFadeIn 0.18s ease both;
+}
+
+.forjaModalBackdrop.leaving {
+  animation: modalFadeOut 0.16s ease both;
+}
+
+.forjaModal {
+  width: min(520px, 100%);
+  border: 1px solid rgba(226, 184, 90, 0.38);
+  background:
+    radial-gradient(circle at 0 0, rgba(226, 184, 90, 0.13), transparent 34%),
+    radial-gradient(circle at 100% 100%, rgba(158, 100, 216, 0.13), transparent 36%),
+    rgba(10, 7, 12, 0.98);
+  padding: clamp(22px, 4vw, 34px);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.62), 0 0 28px rgba(158, 100, 216, 0.12);
+}
+
+.forjaModalTag {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+}
+
+.forjaModal h2 {
+  margin: 10px 0 10px;
+  color: var(--gold);
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+}
+
+.forjaModal p {
+  color: var(--muted);
+  line-height: 1.65;
+  margin: 0 0 18px;
+}
+
+.forjaModalInputLabel {
+  display: grid;
+  gap: 8px;
+  color: var(--text);
+  margin: 16px 0;
+}
+
+.forjaModalInputLabel strong {
+  color: var(--gold);
+}
+
+.forjaModalInputLabel input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid rgba(226, 184, 90, 0.34);
+  background: rgba(0, 0, 0, 0.42);
+  color: var(--text);
+  outline: none;
+  font: inherit;
+}
+
+.inputShake {
+  animation: inputShake 0.24s ease;
+  border-color: #ff5a6b !important;
+}
+
+.forjaModalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.forjaModalActions button {
+  border: 1px solid rgba(226, 184, 90, 0.45);
+  background: rgba(0, 0, 0, 0.38);
+  color: var(--gold);
+  padding: 11px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  transition: 0.2s ease;
+}
+
+.forjaModalActions button:hover {
+  transform: translateY(-2px);
+  background: var(--gold);
+  color: #160e07;
+}
+
+.forjaModalActions .danger {
+  border-color: rgba(255, 90, 107, 0.52);
+  color: #ff8e9a;
+}
+
+.forjaModalActions .danger:hover {
+  background: #ff5a6b;
+  color: #160e07;
+}
+
+.orderActions button.activeStatus {
+  background: var(--gold);
+  color: #160e07;
+  box-shadow: 0 0 20px rgba(226, 184, 90, 0.18);
+}
+
+.orderCard[data-status="entregue"] {
+  border-color: rgba(226, 184, 90, 0.42);
+}
+
+.orderCard[data-status="teste"],
+.orderCard[data-status="arquivado"] {
+  opacity: 0.82;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes toastOut {
+  to { opacity: 0; transform: translateY(10px) scale(0.98); }
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalFadeOut {
+  to { opacity: 0; }
+}
+
+@keyframes inputShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@media (max-width: 620px) {
+  .forjaToastRoot {
+    right: 12px;
+    bottom: 12px;
+    width: calc(100vw - 24px);
+  }
+
+  .forjaModalActions,
+  .forjaModalActions button {
+    width: 100%;
+  }
+}
+
+/* 0.4.5 — Histórico do pedido */
+.orderTimelineBox {
+  margin: 18px 0;
+  padding: 16px;
+  border: 1px solid rgba(226, 184, 90, 0.18);
+  background:
+    linear-gradient(90deg, rgba(226, 184, 90, 0.06), transparent 42%),
+    rgba(0, 0, 0, 0.24);
+}
+
+.timelineHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.timelineHeader strong {
+  color: var(--gold);
+}
+
+.timelineHeader span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.timelineList {
+  display: grid;
+  gap: 12px;
+}
+
+.timelineItem {
+  position: relative;
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 10px;
+}
+
+.timelineItem:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 18px;
+  bottom: -10px;
+  width: 1px;
+  background: rgba(226, 184, 90, 0.22);
+}
+
+.timelineDot {
+  width: 15px;
+  height: 15px;
+  margin-top: 3px;
+  border-radius: 50%;
+  border: 1px solid rgba(226, 184, 90, 0.72);
+  background: rgba(226, 184, 90, 0.18);
+  box-shadow: 0 0 14px rgba(226, 184, 90, 0.22);
+}
+
+.timelineItem strong {
+  display: block;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+.timelineItem small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.76rem;
+  margin-bottom: 5px;
+}
+
+.timelineItem p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 0.9rem;
+}

@@ -33,7 +33,7 @@ function createPackageCard(pkg, index) {
         ${createList(pkg.items)}
       </div>
 
-      <a href="cliente.html" class="packageOrderLink" aria-label="Fazer pedido do pacote ${pkg.name}">Escolher este pacote</a>
+      <a href="cliente.html?tipo=principal&pacote=${encodeURIComponent(pkg.id)}" class="packageOrderLink" aria-label="Fazer pedido do pacote ${pkg.name}">Escolher este pacote</a>
     </article>
   `;
 }
@@ -49,6 +49,7 @@ function createRankCard(rank, index) {
         <strong>${rank.priceLabel}</strong>
         <p>${rank.description}</p>
         <small>${rank.visual}</small>
+        <a href="cliente.html?tipo=memorial&pacote=${encodeURIComponent(rank.id)}" class="rankOrderLink" aria-label="Fazer pedido do ${rank.name}">Escolher este rank</a>
       </div>
     </article>
   `;

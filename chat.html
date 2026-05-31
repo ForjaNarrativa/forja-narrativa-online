@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Chat da Forja | Forja Narrativa</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/chat.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="embers" id="embers"></div>
+  <canvas class="forgeCanvas" id="forgeCanvas" aria-hidden="true"></canvas>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"><img class="logoSvg" src="assets/svg/logo-forja.svg" alt="Símbolo da Forja Narrativa" /></div>
+      <div>
+        <h1>Chat da Forja</h1>
+        <p>Converse diretamente sobre sua criação</p>
+      </div>
+    </div>
+
+    <nav id="mainNav"></nav>
+  </header>
+
+  <main class="clientChatMain">
+    <section class="clientChatHero">
+      <span class="tag">Conversa direta</span>
+      <h2>
+        Uma janela aberta
+        <strong>para a Forja.</strong>
+      </h2>
+      <p>
+        Aqui você manda dúvidas, ajustes e detalhes do seu pedido. A Forja responde por essa mesma conversa.
+      </p>
+    </section>
+
+    <section class="clientChatShell" id="clientChatShell">
+      <div class="chatTopBar">
+        <div>
+          <span id="clientChatOrderLabel">Carregando pedido...</span>
+          <strong id="clientChatTitle">Forja Narrativa</strong>
+        </div>
+        <div class="chatTopActions">
+          <select id="clientOrderSelect" aria-label="Escolher pedido"></select>
+          <button type="button" id="minimizeChatBtn">Minimizar</button>
+        </div>
+      </div>
+
+      <div id="clientChatStatus" class="chatStatus">Preparando conversa...</div>
+      <div id="clientMessages" class="messagesPane" aria-live="polite"></div>
+
+      <form id="clientChatForm" class="chatComposer">
+        <textarea id="clientMessageInput" rows="2" placeholder="Escreva sua mensagem para a Forja..." required></textarea>
+        <button type="submit">Enviar</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>Forja Narrativa © 2026 — Toda conversa também faz parte da criação.</p>
+    <div class="legalLinks"><a href="privacidade.html">Privacidade</a><a href="termos.html">Termos</a></div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/utils/performance.js"></script>
+  <script src="js/chat-shared.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/canvas/forge-particles.js"></script>
+  <script src="js/animations/forja-gsap.js"></script>
+</body>
+</html>

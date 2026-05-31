@@ -51,6 +51,7 @@ js/meus-pedidos.js
 js/nav.js
 js/script.js
 js/supabase.js
+js/utils/performance.js
 login.html
 memorial.html
 meus-pedidos.html
@@ -61,7 +62,62 @@ privacidade.html
 supabase/migrations/001_schema_base.sql
 supabase/migrations/002_policies.sql
 supabase/migrations/003_seed_admin_example.sql
+supabase/migrations/004_admin_delete_orders.sql
+supabase/migrations/005_admin_cleanup_panel_notes.sql
+supabase/migrations/006_0_4_0_security_flow.sql
+supabase/migrations/007_fix_orders_updated_at_and_status.sql
 termos.html
 ts/src/forja-content.ts
 ts/src/types.ts
 tsconfig.json
+
+
+0.4.2 — Polimento interno
+- js/admin.js
+- css/admin.css
+- js/meus-pedidos.js
+- css/meus-pedidos.css
+- package.json
+- docs/ARQUITETURA.md
+conta.html
+css/conta.css
+js/conta.js
+supabase/migrations/008_0_4_3_client_account_profiles.sql
+
+0.4.3 — Conta do cliente
+- conta.html
+- css/conta.css
+- js/conta.js
+- js/nav.js
+- js/cliente.js
+- data/json/internal-pages.json
+- supabase/migrations/008_0_4_3_client_account_profiles.sql
+- package.json
+
+0.4.4 — Pedido Inteligente
+- js/cliente.js: pré-seleção por URL, resumo do pacote, rascunho automático.
+- cliente.html: painel lateral de contrato/resumo.
+- css/cliente.css: estilos do painel de pedido inteligente.
+- js/data/render-packages.js: links diretos para cliente.html com pacote/rank.
+- js/data/package-options.js: evento forja:packages-ready e data attrs nos options.
+- css/style.css: CTA dos ranks do Memorial.
+
+0.4.5 — Histórico do Pedido
+- js/admin.js — registra e renderiza eventos do pedido no painel admin.
+- js/meus-pedidos.js — carrega e mostra linha do tempo para o cliente.
+- js/cliente.js — registra evento inicial ao criar pedido.
+- css/admin.css — estilos da linha do tempo admin.
+- css/meus-pedidos.css — estilos da linha do tempo do cliente.
+- supabase/migrations/009_0_4_5_order_events_history.sql — tabela e policies de histórico.
+
+0.5.0 — Chat por Pedido
+- chat.html
+- chat-admin.html
+- css/chat.css
+- js/chat-shared.js
+- js/chat.js
+- js/chat-admin.js
+- js/chat-widget.js
+- content/markdown/chat.md
+- content/markdown/chat-admin.md
+- supabase/migrations/010_0_5_0_order_chat.sql

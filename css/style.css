@@ -3631,3 +3631,25 @@ body:has(.creditsMain) {
     display: none;
   }
 }
+
+/* 0.4.4 — CTAs diretos dos ranks do Memorial */
+.rankOrderLink {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 18px;
+  padding: 12px 16px;
+  border: 1px solid rgba(226, 184, 90, 0.36);
+  border-radius: 999px;
+  color: var(--gold);
+  background: rgba(0, 0, 0, 0.28);
+  text-decoration: none;
+  font-weight: 800;
+  transition: 0.25s ease;
+}
+
+.rankOrderLink:hover {
+  background: var(--gold);
+  color: #160e07;
+  transform: translateY(-2px);
+}

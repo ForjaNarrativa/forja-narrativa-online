@@ -108,11 +108,14 @@ function getSessionLinks(session, isAdmin, mobile = false) {
 
   const links = [
     { label: mobile ? "Fazer pedido logado" : "Fazer pedido", href: "cliente.html", match: ["cliente.html"] },
-    { label: "Meus Pedidos", href: "meus-pedidos.html", match: ["meus-pedidos.html"] }
+    { label: "Meus Pedidos", href: "meus-pedidos.html", match: ["meus-pedidos.html"] },
+    { label: mobile ? "Minha Conta" : "Conta", href: "conta.html", match: ["conta.html"] },
+    { label: "Chat", href: "chat.html", match: ["chat.html"] }
   ];
 
   if (isAdmin) {
     links.push({ label: "Sala do Criador", href: "admin.html", match: ["admin.html", "login.html"] });
+    links.push({ label: "Conversas", href: "chat-admin.html", match: ["chat-admin.html"] });
   }
 
   return links.filter((page) => !isCurrentPage(page));

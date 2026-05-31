@@ -91,9 +91,10 @@ loginForm.addEventListener("submit", async (event) => {
   const isAdmin = await isForjaAdminSession(data.session);
 
   if (!isAdmin) {
-    setLoginMessage("Login feito, mas essa conta não tem acesso à Sala do Criador. Volte ao site para usar a área de cliente.", "error");
+    await forjaDB.auth.signOut();
+    setLoginMessage("Essa conta não tem acesso à Sala do Criador. Use a entrada de cliente para acompanhar pedidos.", "error");
     loginBtn.disabled = false;
-    loginBtn.textContent = "Entrada reservada";
+    loginBtn.textContent = "Entrar no Painel";
     return;
   }
 

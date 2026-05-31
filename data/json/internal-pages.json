@@ -30,6 +30,16 @@
     "description": "Login e criação de conta para clientes."
   },
   {
+    "label": "Minha Conta",
+    "href": "conta.html",
+    "match": [
+      "conta.html"
+    ],
+    "area": "cliente",
+    "public": false,
+    "description": "Área de perfil, atalhos e segurança da conta do cliente."
+  },
+  {
     "label": "Fazer Pedido Logado",
     "href": "cliente.html",
     "match": [
@@ -66,5 +76,19 @@
     ],
     "area": "legal",
     "description": "Termos simples de uso e pedidos da Forja."
+  },
+  {
+    "label": "Chat",
+    "href": "chat.html",
+    "public": false,
+    "area": "cliente",
+    "description": "Conversa direta entre cliente e Forja."
+  },
+  {
+    "label": "Conversas",
+    "href": "chat-admin.html",
+    "public": false,
+    "area": "admin",
+    "description": "Painel de conversas da Sala do Criador."
   }
 ]

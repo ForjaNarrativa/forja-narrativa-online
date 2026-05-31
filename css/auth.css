@@ -161,3 +161,6 @@
 .backLink:hover {
   color: var(--gold);
 }
+.authPanel label.is-hidden {
+  display: none;
+}

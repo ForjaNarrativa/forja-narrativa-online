@@ -3,6 +3,7 @@ const clientOrdersList = document.getElementById("clientOrdersList");
 const embers = document.getElementById("embers");
 
 let currentSession = null;
+let orderEventsCache = {};
 
 function escapeHTML(value) {
   return String(value || "")
@@ -22,6 +23,125 @@ function formatDate(dateValue) {
     dateStyle: "short",
     timeStyle: "short"
   });
+}
+
+
+function getEventTitle(event) {
+  const type = String(event.event_type || "").toLowerCase();
+
+  if (type === "created") return "Pedido criado";
+  if (type === "status_changed") return "Status atualizado";
+  if (type === "delivery_saved") return "Entrega preparada";
+  if (type === "delivery_sent") return "Entrega final enviada";
+  if (type === "note") return "Nota da Forja";
+
+  return "Movimento registrado";
+}
+
+function getActorLabel(event) {
+  const role = String(event.actor_role || "").toLowerCase();
+  if (role === "admin") return "Forja Narrativa";
+  if (role === "cliente") return "Você";
+  return "Forja";
+}
+
+function renderClientTimeline(order) {
+  const events = orderEventsCache[order.id] || [];
+  const timeline = events.length ? events : [
+    {
+      event_type: "created",
+      created_at: order.created_at,
+      actor_role: "cliente",
+      note: "Sua faísca chegou até a Forja."
+    }
+  ];
+
+  return `
+    <div class="clientTimelineBox">
+      <div class="clientTimelineHeader">
+        <strong>Linha do tempo</strong>
+        <span>${events.length ? `${events.length} registro(s)` : "início do pedido"}</span>
+      </div>
+
+      <div class="clientTimelineList">
+        ${timeline.slice(0, 5).map((event) => `
+          <div class="clientTimelineItem">
+            <span class="clientTimelineDot"></span>
+            <div>
+              <strong>${escapeHTML(getEventTitle(event))}</strong>
+              <small>${escapeHTML(getActorLabel(event))} • ${formatDate(event.created_at)}</small>
+              ${event.old_status || event.new_status ? `
+                <p>${escapeHTML(event.old_status || "—")} → ${escapeHTML(event.new_status || "—")}</p>
+              ` : ""}
+              ${event.note ? `<p>${escapeHTML(event.note)}</p>` : ""}
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+async function loadOrderEvents(orderIds) {
+  orderEventsCache = {};
+
+  if (!orderIds || orderIds.length === 0) return;
+
+  try {
+    const { data, error } = await forjaDB
+      .from("order_events")
+      .select("*")
+      .in("order_id", orderIds)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.warn("Histórico de pedidos indisponível.", error);
+      return;
+    }
+
+    (data || []).forEach((event) => {
+      if (!orderEventsCache[event.order_id]) orderEventsCache[event.order_id] = [];
+      orderEventsCache[event.order_id].push(event);
+    });
+  } catch (error) {
+    console.warn("Histórico de pedidos ainda não está ativo.", error);
+  }
+}
+
+
+function getOrderStage(status) {
+  const normalized = String(status || "").toLowerCase();
+
+  if (normalized.includes("cancelado")) return -1;
+  if (normalized.includes("teste")) return 0;
+  if (normalized.includes("entregue")) return 4;
+  if (normalized.includes("revisão")) return 3;
+  if (normalized.includes("produção")) return 3;
+  if (normalized.includes("resposta")) return 2;
+  if (normalized.includes("pagamento")) return 1;
+  return 0;
+}
+
+function renderOrderProgress(order) {
+  const stage = getOrderStage(order.status);
+  const steps = ["Análise", "Pagamento", "Produção", "Revisão", "Entrega"];
+
+  if (stage < 0) {
+    return `
+      <div class="clientOrderProgress cancelled">
+        <span>Pedido cancelado</span>
+        <p>Esse pedido foi encerrado. Caso tenha dúvida, entre em contato com a Forja.</p>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="clientOrderProgress" aria-label="Progresso do pedido">
+      ${steps.map((step, index) => `
+        <span class="${index <= stage ? "done" : ""}">${step}</span>
+      `).join("")}
+    </div>
+  `;
 }
 
 function getNextStep(status, paymentStatus) {
@@ -79,6 +199,10 @@ function renderOrders(orders) {
           </div>
         </div>
 
+        ${renderOrderProgress(order)}
+
+        ${renderClientTimeline(order)}
+
         <div class="clientOrderGrid">
           <div>
             <span>Código interno</span>
@@ -106,6 +230,14 @@ function renderOrders(orders) {
           <p>${escapeHTML(order.character_idea)}</p>
         </div>
 
+        <div class="clientOrderChatCall">
+          <div>
+            <span>Chat do pedido</span>
+            <strong>Converse diretamente com a Forja sobre essa criação.</strong>
+          </div>
+          <a href="chat.html?pedido=${order.id}">Abrir conversa</a>
+        </div>
+
         <div class="clientOrderFuture">
           <div>
             <span>Mensagens do pedido</span>
@@ -113,7 +245,7 @@ function renderOrders(orders) {
           </div>
           <div>
             <span>Entrega final</span>
-            ${order.delivery_url ? `<a href="${escapeHTML(order.delivery_url)}" target="_blank" rel="noopener">Abrir entrega</a>` : `<strong>Será exibida aqui futuramente</strong>`}
+            ${order.delivery_url ? `<a class="deliveryLink" href="${escapeHTML(order.delivery_url)}" target="_blank" rel="noopener">Abrir entrega final</a>` : `<strong>A entrega aparecerá aqui quando estiver pronta</strong>`}
             ${order.delivery_note ? `<p class="deliveryNote">${escapeHTML(order.delivery_note)}</p>` : ""}
           </div>
         </div>
@@ -145,7 +277,10 @@ async function loadClientOrders() {
     return;
   }
 
-  renderOrders(data || []);
+  const orders = data || [];
+  await loadOrderEvents(orders.map((order) => order.id));
+
+  renderOrders(orders);
 }
 
 function createEmber() {

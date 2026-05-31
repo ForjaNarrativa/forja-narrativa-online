@@ -17,6 +17,7 @@ const unpaidOrders = document.getElementById("unpaidOrders");
 const embers = document.getElementById("embers");
 
 let ordersCache = [];
+let orderEventsCache = {};
 let currentUser = null;
 
 const OWNER_ADMIN_EMAILS = ["forjanarrativa5790@gmail.com"];
@@ -29,6 +30,136 @@ function isOwnerAdminEmail(email) {
   return OWNER_ADMIN_EMAILS.includes(normalizeEmail(email));
 }
 
+function ensureAdminUiLayer() {
+  let toastRoot = document.getElementById("forjaToastRoot");
+  if (!toastRoot) {
+    toastRoot = document.createElement("div");
+    toastRoot.id = "forjaToastRoot";
+    toastRoot.className = "forjaToastRoot";
+    toastRoot.setAttribute("aria-live", "polite");
+    document.body.appendChild(toastRoot);
+  }
+
+  let modalRoot = document.getElementById("forjaModalRoot");
+  if (!modalRoot) {
+    modalRoot = document.createElement("div");
+    modalRoot.id = "forjaModalRoot";
+    document.body.appendChild(modalRoot);
+  }
+
+  return { toastRoot, modalRoot };
+}
+
+function showAdminToast(message, type = "info", details = "") {
+  const { toastRoot } = ensureAdminUiLayer();
+  const toast = document.createElement("div");
+  toast.className = `forjaToast ${type}`;
+
+  const labels = {
+    success: "feito",
+    error: "atenção",
+    warning: "aviso",
+    info: "forja"
+  };
+
+  toast.innerHTML = `
+    <span>${labels[type] || labels.info}</span>
+    <strong>${escapeHTML(message)}</strong>
+    ${details ? `<p>${escapeHTML(details)}</p>` : ""}
+    <button type="button" aria-label="Fechar aviso">×</button>
+  `;
+
+  const close = () => {
+    toast.classList.add("leaving");
+    setTimeout(() => toast.remove(), 180);
+  };
+
+  toast.querySelector("button").addEventListener("click", close);
+  toastRoot.appendChild(toast);
+  setTimeout(close, type === "error" ? 6500 : 4200);
+}
+
+function showAdminDialog({ title, message, confirmLabel = "Confirmar", cancelLabel = "Cancelar", danger = false, expectedText = null }) {
+  const { modalRoot } = ensureAdminUiLayer();
+
+  return new Promise((resolve) => {
+    modalRoot.innerHTML = `
+      <div class="forjaModalBackdrop" role="presentation">
+        <section class="forjaModal" role="dialog" aria-modal="true" aria-labelledby="forjaModalTitle">
+          <span class="forjaModalTag">Sala do Criador</span>
+          <h2 id="forjaModalTitle">${escapeHTML(title)}</h2>
+          <p>${escapeHTML(message)}</p>
+          ${expectedText ? `
+            <label class="forjaModalInputLabel">
+              Digite <strong>${escapeHTML(expectedText)}</strong> para continuar
+              <input id="forjaModalInput" type="text" autocomplete="off" />
+            </label>
+          ` : ""}
+          <div class="forjaModalActions">
+            <button type="button" class="modalCancel">${escapeHTML(cancelLabel)}</button>
+            <button type="button" class="modalConfirm ${danger ? "danger" : ""}">${escapeHTML(confirmLabel)}</button>
+          </div>
+        </section>
+      </div>
+    `;
+
+    const backdrop = modalRoot.querySelector(".forjaModalBackdrop");
+    const cancelBtn = modalRoot.querySelector(".modalCancel");
+    const confirmBtn = modalRoot.querySelector(".modalConfirm");
+    const input = modalRoot.querySelector("#forjaModalInput");
+
+    function close(value) {
+      backdrop.classList.add("leaving");
+      setTimeout(() => {
+        modalRoot.innerHTML = "";
+        resolve(value);
+      }, 160);
+    }
+
+    cancelBtn.addEventListener("click", () => close(false));
+    backdrop.addEventListener("click", (event) => {
+      if (event.target === backdrop) close(false);
+    });
+
+    confirmBtn.addEventListener("click", () => {
+      if (expectedText && String(input.value || "").trim() !== expectedText) {
+        input.focus();
+        input.classList.add("inputShake");
+        showAdminToast("Confirmação incorreta.", "warning", `Digite ${expectedText} exatamente como aparece.`);
+        setTimeout(() => input.classList.remove("inputShake"), 260);
+        return;
+      }
+      close(true);
+    });
+
+    window.addEventListener("keydown", function handleKeydown(event) {
+      if (!document.getElementById("forjaModalRoot")?.innerHTML) {
+        window.removeEventListener("keydown", handleKeydown);
+        return;
+      }
+      if (event.key === "Escape") {
+        window.removeEventListener("keydown", handleKeydown);
+        close(false);
+      }
+    });
+
+    if (input) input.focus();
+    else confirmBtn.focus();
+  });
+}
+
+function setButtonBusy(button, isBusy, busyText = "Salvando...") {
+  if (!button) return;
+
+  if (isBusy) {
+    button.dataset.originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = busyText;
+  } else {
+    button.disabled = false;
+    button.textContent = button.dataset.originalText || button.textContent;
+  }
+}
 
 function escapeHTML(value) {
   return String(value || "")
@@ -48,6 +179,119 @@ function formatDate(dateValue) {
     dateStyle: "short",
     timeStyle: "short"
   });
+}
+
+
+function getActorLabel(event) {
+  if (!event) return "Forja";
+  if (String(event.actor_role || "").toLowerCase() === "admin") return "Sala do Criador";
+  if (String(event.actor_role || "").toLowerCase() === "cliente") return "Cliente";
+  return "Forja";
+}
+
+function getEventTitle(event) {
+  const type = String(event.event_type || "").toLowerCase();
+
+  if (type === "created") return "Pedido criado";
+  if (type === "status_changed") return "Status atualizado";
+  if (type === "delivery_saved") return "Entrega salva";
+  if (type === "delivery_sent") return "Entrega final enviada";
+  if (type === "note") return "Nota registrada";
+
+  return "Movimento registrado";
+}
+
+function renderOrderTimeline(order) {
+  const events = orderEventsCache[order.id] || [];
+
+  const fallbackEvents = [
+    {
+      event_type: "created",
+      created_at: order.created_at,
+      actor_role: "cliente",
+      note: "Pedido recebido pela Forja."
+    }
+  ];
+
+  const timeline = events.length ? events : fallbackEvents;
+
+  return `
+    <div class="orderTimelineBox">
+      <div class="timelineHeader">
+        <strong>Linha do tempo</strong>
+        <span>${events.length ? `${events.length} registro(s)` : "registro inicial"}</span>
+      </div>
+
+      <div class="timelineList">
+        ${timeline.slice(0, 5).map((event) => `
+          <div class="timelineItem">
+            <span class="timelineDot"></span>
+            <div>
+              <strong>${escapeHTML(getEventTitle(event))}</strong>
+              <small>${escapeHTML(getActorLabel(event))} • ${formatDate(event.created_at)}</small>
+              ${event.old_status || event.new_status ? `
+                <p>${escapeHTML(event.old_status || "—")} → ${escapeHTML(event.new_status || "—")}</p>
+              ` : ""}
+              ${event.note ? `<p>${escapeHTML(event.note)}</p>` : ""}
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+async function loadOrderEvents(orderIds) {
+  orderEventsCache = {};
+
+  if (!orderIds || orderIds.length === 0) return;
+
+  try {
+    const { data, error } = await forjaDB
+      .from("order_events")
+      .select("*")
+      .in("order_id", orderIds)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.warn("Histórico de pedidos indisponível.", error);
+      return;
+    }
+
+    (data || []).forEach((event) => {
+      if (!orderEventsCache[event.order_id]) orderEventsCache[event.order_id] = [];
+      orderEventsCache[event.order_id].push(event);
+    });
+  } catch (error) {
+    console.warn("Histórico de pedidos ainda não está ativo.", error);
+  }
+}
+
+async function logOrderEvent(orderId, eventType, payload = {}) {
+  if (!orderId) return;
+
+  try {
+    const { error } = await forjaDB
+      .from("order_events")
+      .insert({
+        order_id: orderId,
+        actor_id: currentUser?.id || null,
+        actor_email: currentUser?.email || null,
+        actor_role: "admin",
+        event_type: eventType,
+        old_status: payload.old_status || null,
+        new_status: payload.new_status || null,
+        old_payment_status: payload.old_payment_status || null,
+        new_payment_status: payload.new_payment_status || null,
+        note: payload.note || null
+      });
+
+    if (error) {
+      console.warn("Não foi possível registrar histórico do pedido.", error);
+    }
+  } catch (error) {
+    console.warn("Histórico de pedidos ainda não está disponível.", error);
+  }
 }
 
 async function isForjaAdminSession(session) {
@@ -91,8 +335,10 @@ async function requireAdminAccess() {
   const isAdmin = await isForjaAdminSession(sessionData.session);
 
   if (!isAdmin) {
-    alert("Acesso negado. Esta sala é reservada para administradores da Forja.");
-    window.location.href = "index.html";
+    showAdminToast("Acesso negado.", "error", "Esta sala é reservada para administradores da Forja.");
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 1400);
     return false;
   }
 
@@ -126,7 +372,8 @@ function updateStats(orders) {
 function renderStatusButtons(order) {
   return statusPresets.map((preset) => {
     const payment = preset.payment || order.payment_status || "não pago";
-    return `<button onclick="updateOrderStatus('${order.id}', '${preset.status}', '${payment}')">${preset.label}</button>`;
+    const isActive = String(order.status || "").toLowerCase() === preset.status.toLowerCase();
+    return `<button class="${isActive ? "activeStatus" : ""}" onclick="updateOrderStatus('${order.id}', '${preset.status}', '${payment}')">${preset.label}</button>`;
   }).join("");
 }
 
@@ -152,8 +399,8 @@ function renderDeliveryBox(order) {
       </label>
 
       <div class="deliveryActions">
-        <button type="button" onclick="saveOrderDelivery('${order.id}', false)">Salvar entrega</button>
-        <button type="button" onclick="saveOrderDelivery('${order.id}', true)">Salvar e marcar entregue</button>
+        <button type="button" onclick="saveOrderDelivery('${order.id}', false, this)">Salvar entrega</button>
+        <button type="button" onclick="saveOrderDelivery('${order.id}', true, this)">Salvar e marcar entregue</button>
       </div>
     </div>
   `;
@@ -218,7 +465,7 @@ function renderOrders() {
 
   ordersList.innerHTML = filtered.map((order) => {
     return `
-      <article class="orderCard">
+      <article class="orderCard" data-status="${escapeHTML(order.status)}">
         <div class="orderTop">
           <div>
             <h3>${escapeHTML(order.client_name)}</h3>
@@ -244,6 +491,8 @@ function renderOrders() {
         <div class="orderActions">
           ${renderStatusButtons(order)}
         </div>
+
+        ${renderOrderTimeline(order)}
 
         ${renderDeliveryBox(order)}
 
@@ -280,10 +529,12 @@ async function loadOrders() {
       </div>
     `;
 
+    showAdminToast("Erro ao carregar pedidos.", "error", error.message || "Revise as policies de admin no Supabase.");
     return;
   }
 
   ordersCache = data || [];
+  await loadOrderEvents(ordersCache.map((order) => order.id));
 
   updateStats(ordersCache);
 
@@ -292,12 +543,13 @@ async function loadOrders() {
   renderOrders();
 }
 
-async function saveOrderDelivery(orderId, markDelivered) {
+async function saveOrderDelivery(orderId, markDelivered, triggerButton = null) {
+  const oldOrder = ordersCache.find((item) => item.id === orderId);
   const urlInput = document.getElementById(`deliveryUrl-${orderId}`);
   const noteInput = document.getElementById(`deliveryNote-${orderId}`);
 
   if (!urlInput || !noteInput) {
-    alert("Campos de entrega não encontrados. Atualize o painel e tente novamente.");
+    showAdminToast("Campos de entrega não encontrados.", "error", "Atualize o painel e tente novamente.");
     return;
   }
 
@@ -314,22 +566,36 @@ async function saveOrderDelivery(orderId, markDelivered) {
     updatePayload.payment_status = "pago";
   }
 
+  setButtonBusy(triggerButton, true, markDelivered ? "Entregando..." : "Salvando...");
+
   const { error } = await forjaDB
     .from("orders")
     .update(updatePayload)
     .eq("id", orderId);
 
+  setButtonBusy(triggerButton, false);
+
   if (error) {
     console.error(error);
-    alert("Erro ao salvar entrega. Rode a migration 006 da versão 0.4.0 no Supabase.");
+    showAdminToast("Erro ao salvar entrega.", "error", error.message || "Confira se as migrations 006 e 007 foram rodadas no Supabase.");
     return;
   }
 
+  await logOrderEvent(orderId, markDelivered ? "delivery_sent" : "delivery_saved", {
+    old_status: oldOrder?.status || null,
+    new_status: markDelivered ? "entregue" : oldOrder?.status || null,
+    old_payment_status: oldOrder?.payment_status || null,
+    new_payment_status: markDelivered ? "pago" : oldOrder?.payment_status || null,
+    note: deliveryNote || (deliveryUrl ? "Link de entrega atualizado." : "Entrega atualizada.")
+  });
+
   await loadOrders();
-  alert(markDelivered ? "Entrega salva e pedido marcado como entregue." : "Entrega salva.");
+  showAdminToast(markDelivered ? "Entrega salva e pedido marcado como entregue." : "Entrega salva.", "success");
 }
 
 async function updateOrderStatus(orderId, newStatus, newPaymentStatus) {
+  const oldOrder = ordersCache.find((item) => item.id === orderId);
+
   const { error } = await forjaDB
     .from("orders")
     .update({
@@ -340,25 +606,35 @@ async function updateOrderStatus(orderId, newStatus, newPaymentStatus) {
 
   if (error) {
     console.error(error);
-    alert("Erro ao atualizar pedido. Verifique se você está logado como admin.");
+    showAdminToast("Erro ao atualizar pedido.", "error", error.message || "Verifique se você está logado como admin.");
     return;
   }
 
+  await logOrderEvent(orderId, "status_changed", {
+    old_status: oldOrder?.status || null,
+    new_status: newStatus,
+    old_payment_status: oldOrder?.payment_status || null,
+    new_payment_status: newPaymentStatus || null,
+    note: `Status atualizado pela Sala do Criador.`
+  });
+
   await loadOrders();
+  showAdminToast(`Pedido movido para: ${newStatus}.`, "success");
 }
 
 async function archiveOrder(orderId) {
   const order = ordersCache.find((item) => item.id === orderId);
 
   if (!order) {
-    alert("Pedido não encontrado na lista atual. Atualize o painel e tente de novo.");
+    showAdminToast("Pedido não encontrado.", "error", "Atualize o painel e tente novamente.");
     return;
   }
 
-  const confirmArchive = confirm(
-    `Arquivar o pedido de ${order.client_name || "cliente sem nome"}?\n\n` +
-    "Ele não será excluído. Você ainda poderá encontrá-lo pelo filtro Arquivado."
-  );
+  const confirmArchive = await showAdminDialog({
+    title: "Arquivar pedido?",
+    message: `Arquivar o pedido de ${order.client_name || "cliente sem nome"}? Ele não será excluído e poderá ser restaurado depois.`,
+    confirmLabel: "Arquivar"
+  });
 
   if (!confirmArchive) return;
 
@@ -369,28 +645,22 @@ async function deleteOrder(orderId) {
   const order = ordersCache.find((item) => item.id === orderId);
 
   if (!order) {
-    alert("Pedido não encontrado na lista atual. Atualize o painel e tente de novo.");
+    showAdminToast("Pedido não encontrado.", "error", "Atualize o painel e tente novamente.");
     return;
   }
 
   const clientName = order.client_name || "cliente sem nome";
   const packageName = order.package_name || "pacote não informado";
 
-  const firstConfirm = confirm(
-    `Excluir permanentemente o pedido de ${clientName} (${packageName})?\n\n` +
-    "Use isso apenas para pedidos de teste, spam ou registros que você realmente não quer manter."
-  );
+  const confirmed = await showAdminDialog({
+    title: "Excluir pedido permanentemente?",
+    message: `Pedido de ${clientName} (${packageName}). Use isso apenas para testes, spam ou registros que não devem ficar no banco.`,
+    confirmLabel: "Excluir pedido",
+    danger: true,
+    expectedText: "EXCLUIR"
+  });
 
-  if (!firstConfirm) return;
-
-  const typed = prompt(
-    "Para confirmar a exclusão permanente, digite EXCLUIR em letras maiúsculas."
-  );
-
-  if (typed !== "EXCLUIR") {
-    alert("Exclusão cancelada.");
-    return;
-  }
+  if (!confirmed) return;
 
   const { error } = await forjaDB
     .from("orders")
@@ -399,7 +669,7 @@ async function deleteOrder(orderId) {
 
   if (error) {
     console.error(error);
-    alert("Erro ao excluir pedido. Verifique se a policy de DELETE para admin foi aplicada no Supabase.");
+    showAdminToast("Erro ao excluir pedido.", "error", error.message || "Verifique se a policy de DELETE para admin está ativa.");
     return;
   }
 
@@ -407,7 +677,7 @@ async function deleteOrder(orderId) {
   updateStats(ordersCache);
   renderOrders();
 
-  alert("Pedido excluído da Sala do Criador.");
+  showAdminToast("Pedido excluído da Sala do Criador.", "success");
 }
 
 async function deleteAllTestOrders() {
@@ -416,25 +686,19 @@ async function deleteAllTestOrders() {
   });
 
   if (testOrders.length === 0) {
-    alert("Nenhum pedido com status Teste encontrado.");
+    showAdminToast("Nenhum pedido teste encontrado.", "info");
     return;
   }
 
-  const firstConfirm = confirm(
-    `Excluir permanentemente ${testOrders.length} pedido(s) com status Teste?\n\n` +
-    "Use isso apenas para limpar pedidos falsos criados durante testes."
-  );
+  const confirmed = await showAdminDialog({
+    title: "Limpar pedidos teste?",
+    message: `Excluir permanentemente ${testOrders.length} pedido(s) com status Teste? Use isso apenas para limpar registros falsos.`,
+    confirmLabel: "Limpar testes",
+    danger: true,
+    expectedText: "LIMPAR TESTES"
+  });
 
-  if (!firstConfirm) return;
-
-  const typed = prompt(
-    "Para confirmar a limpeza em massa, digite LIMPAR TESTES em letras maiúsculas."
-  );
-
-  if (typed !== "LIMPAR TESTES") {
-    alert("Limpeza em massa cancelada.");
-    return;
-  }
+  if (!confirmed) return;
 
   deleteTestOrdersBtn.disabled = true;
   deleteTestOrdersBtn.textContent = "Limpando...";
@@ -451,7 +715,7 @@ async function deleteAllTestOrders() {
 
   if (error) {
     console.error(error);
-    alert("Erro ao limpar pedidos teste. Verifique se a policy de DELETE para admin está ativa.");
+    showAdminToast("Erro ao limpar pedidos teste.", "error", error.message || "Verifique se a policy de DELETE para admin está ativa.");
     return;
   }
 
@@ -459,12 +723,13 @@ async function deleteAllTestOrders() {
   updateStats(ordersCache);
   renderOrders();
 
-  alert("Pedidos teste excluídos da Sala do Criador.");
+  showAdminToast("Pedidos teste excluídos da Sala do Criador.", "success");
 }
 
 function setStatusFilter(status) {
   statusFilter.value = status;
   renderOrders();
+  showAdminToast(status ? `Filtro aplicado: ${status}.` : "Filtro limpo.", "info");
 }
 
 function clearAdminFilters() {
@@ -472,6 +737,7 @@ function clearAdminFilters() {
   packageFilter.value = "";
   statusFilter.value = "";
   renderOrders();
+  showAdminToast("Filtros limpos.", "info");
 }
 
 async function logout() {
@@ -505,7 +771,10 @@ function createEmber() {
   }, (duration + delay) * 1000);
 }
 
-refreshBtn.addEventListener("click", loadOrders);
+refreshBtn.addEventListener("click", async () => {
+  await loadOrders();
+  showAdminToast("Painel atualizado.", "success");
+});
 logoutBtn.addEventListener("click", logout);
 searchInput.addEventListener("input", renderOrders);
 packageFilter.addEventListener("change", renderOrders);
@@ -523,11 +792,13 @@ for (let i = 0; i < (perf.initialEmbers || 12); i += 1) {
 }
 
 async function initAdminPanel() {
+  ensureAdminUiLayer();
   const hasAccess = await requireAdminAccess();
 
   if (!hasAccess) return;
 
   await loadOrders();
+  showAdminToast("Sala do Criador pronta.", "success", "Pedidos carregados com segurança.");
 }
 
 initAdminPanel();

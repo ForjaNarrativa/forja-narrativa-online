@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Conversas | Sala do Criador</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+  <link rel="stylesheet" href="css/chat.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="embers" id="embers"></div>
+  <canvas class="forgeCanvas" id="forgeCanvas" aria-hidden="true"></canvas>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"><img class="logoSvg" src="assets/svg/logo-forja.svg" alt="Símbolo da Forja Narrativa" /></div>
+      <div>
+        <h1>Conversas da Forja</h1>
+        <p>Chat interno da Sala do Criador</p>
+      </div>
+    </div>
+
+    <nav>
+      <a href="admin.html">Pedidos</a>
+      <a href="index.html">Voltar ao site</a>
+      <button id="adminChatLogoutBtn" class="adminNavBtn dangerBtn">Sair da conta</button>
+    </nav>
+  </header>
+
+  <main class="adminChatMain">
+    <section class="adminChatHero">
+      <span class="tag">Sala do Criador • conversas</span>
+      <h2>
+        Painel de mensagens
+        <strong>estilo WhatsApp Web.</strong>
+      </h2>
+      <p>
+        À esquerda ficam os pedidos/clientes. À direita fica a conversa aberta.
+      </p>
+    </section>
+
+    <section class="adminChatShell">
+      <aside class="chatContactsPanel">
+        <div class="chatContactsHeader">
+          <strong>Contatos</strong>
+          <input id="adminChatSearch" type="text" placeholder="Buscar cliente, e-mail ou pacote..." />
+        </div>
+        <div id="adminContactsList" class="contactsList">
+          <div class="chatStatus">Carregando contatos...</div>
+        </div>
+      </aside>
+
+      <section class="adminConversationPanel">
+        <div class="conversationHeader">
+          <div>
+            <span id="adminConversationMeta">Nenhum contato selecionado</span>
+            <strong id="adminConversationTitle">Escolha uma conversa</strong>
+          </div>
+          <a id="adminOpenOrderLink" href="admin.html" class="ghostChatLink">Ver pedido</a>
+        </div>
+
+        <div id="adminChatStatus" class="chatStatus">Selecione um contato para abrir a conversa.</div>
+        <div id="adminMessages" class="messagesPane adminMessagesPane" aria-live="polite"></div>
+
+        <form id="adminChatForm" class="chatComposer adminComposer">
+          <textarea id="adminMessageInput" rows="2" placeholder="Responder como Forja Narrativa..." required disabled></textarea>
+          <button type="submit" disabled>Enviar</button>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <p>Forja Narrativa © 2026 — Conversas internas.</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/utils/performance.js"></script>
+  <script src="js/chat-shared.js"></script>
+  <script src="js/chat-admin.js"></script>
+  <script src="js/canvas/forge-particles.js"></script>
+  <script src="js/animations/forja-gsap.js"></script>
+</body>
+</html>

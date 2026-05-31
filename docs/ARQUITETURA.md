@@ -1,6 +1,6 @@
 # Arquitetura — Forja Narrativa Online
 
-Versão interna: **0.3 — limpeza, segurança e preparação para crescimento**.
+Versão interna: **0.4.5 — histórico do pedido**.
 
 ## Páginas públicas
 
@@ -15,6 +15,7 @@ Versão interna: **0.3 — limpeza, segurança e preparação para crescimento**
 ## Páginas internas
 
 - `auth.html` — login/cadastro do cliente, com recuperação de senha.
+- `conta.html` — perfil do cliente, atalhos da conta e recuperação de senha.
 - `cliente.html` — formulário de novo pedido logado.
 - `meus-pedidos.html` — acompanhamento de pedidos do cliente.
 - `login.html` — entrada reservada do admin.
@@ -44,6 +45,12 @@ A pasta `supabase/migrations/` documenta o banco esperado:
 - `001_schema_base.sql` — tabelas `profiles`, `admin_users`, `orders`, `order_messages`, `order_deliveries`.
 - `002_policies.sql` — RLS e policies para cliente/admin.
 - `003_seed_admin_example.sql` — exemplo para registrar admin.
+- `004_admin_delete_orders.sql` — permite exclusão de pedidos por admin.
+- `005_admin_cleanup_panel_notes.sql` — documentação do painel de limpeza.
+- `006_0_4_0_security_flow.sql` — entrega final, chat futuro seguro e função admin.
+- `007_fix_orders_updated_at_and_status.sql` — correção oficial de `updated_at` e status aceitos.
+- `008_0_4_3_client_account_profiles.sql` — conta do cliente e profiles.
+- `009_0_4_5_order_events_history.sql` — linha do tempo/histórico do pedido.
 
 Antes de divulgar para clientes reais, revise as policies no painel do Supabase.
 
@@ -193,3 +200,131 @@ Foco: segurança, fluxo final e preparação para testes reais.
   - reforço de policies para entregas.
 - Criado `js/utils/performance.js` para modo mobile leve automático.
 - Canvas, brasas e GSAP agora respeitam `forjaPerformance` para reduzir efeitos em celular fraco, telas pequenas e preferência de movimento reduzido.
+
+
+## Versão 0.4.0 — Temperagem da Forja
+
+Mudanças principais:
+
+- `package.json` atualizado para `0.4.0`.
+- Login admin agora verifica permissão antes de entrar na Sala do Criador.
+- Cliente comum não é mais deslogado à força ao acessar a entrada admin.
+- Sala do Criador recebeu campos de entrega final: link e observação.
+- `Meus Pedidos` mostra observação da entrega quando existir.
+- Adicionado modo mobile leve em `js/utils/performance.js`.
+- Canvas, brasas e GSAP reduzem efeitos em mobile/movimento reduzido.
+- Migration `006_0_4_0_security_flow.sql` criada.
+
+## Versão 0.4.1 — Correções de estabilidade
+
+Correções aplicadas:
+
+- Recuperação de senha não exige mais e-mail quando o usuário já está no modo de redefinição por link.
+- O filtro de pacote no admin agora usa somente o nome do pacote/rank como valor, evitando falhas quando preços mudam.
+- Tentativa de login admin com conta comum agora desfaz a sessão e informa que a área é reservada.
+- Adicionada migration `007_fix_orders_updated_at_and_status.sql`, registrando oficialmente a correção do erro `record "new" has no field "updated_at"`.
+- A migration 007 também inclui `isento` em `payment_status`, usado pelo status de teste.
+
+## Versão 0.4.2 — Polimento interno
+
+Mudanças:
+
+- Sala do Criador recebeu avisos visuais próprios no lugar de `alert()` para ações comuns.
+- Confirmações perigosas agora usam modal estilizado da Forja, mantendo proteção para exclusões.
+- Botões de status mostram visualmente o status ativo do pedido.
+- Salvamento de entrega mostra estado de carregamento no botão.
+- `Meus Pedidos` recebeu trilha visual de progresso: análise, pagamento, produção, revisão e entrega.
+- Links de entrega ficaram mais claros para o cliente.
+- `package.json` atualizado para `0.4.2`.
+
+Observação:
+
+- Não exige SQL novo caso a migration 007 já tenha sido rodada no Supabase.
+
+
+## 0.4.3 — Conta do Cliente
+
+- Adicionada `conta.html` como área de perfil do cliente.
+- Adicionados `css/conta.css` e `js/conta.js`.
+- Menu logado agora exibe **Conta** / **Minha Conta** e esconde a página atual.
+- `cliente.html` passa a preencher o nome automaticamente usando `profiles.nome`.
+- Ao enviar pedido, o nome usado é salvo/atualizado em `profiles`.
+- Criada migration `008_0_4_3_client_account_profiles.sql` para reforçar tabela/policies de `profiles`.
+
+---
+
+## Versão 0.4.4 — Pedido Inteligente
+
+Foco: deixar a escolha de pacote mais conectada ao formulário real de encomenda.
+
+Mudanças:
+
+- Cards dos pacotes principais agora apontam para `cliente.html?tipo=principal&pacote=<id>`.
+- Ranks do Memorial agora também possuem botão direto para pedido.
+- `cliente.html` ganhou painel lateral de resumo do pacote selecionado.
+- `cliente.js` agora lê parâmetros da URL e pré-seleciona o pacote/rank correto.
+- Formulário de pedido agora tem rascunho automático em `localStorage`.
+- O rascunho é restaurado ao voltar para a página e limpo após envio bem-sucedido.
+- `package-options.js` agora expõe `window.forjaPackageData` e dispara `forja:packages-ready`.
+- A experiência de pedido ficou mais clara para clientes que chegam pela página Pacotes.
+
+SQL:
+
+- Esta versão não exige migration nova no Supabase.
+
+## Versão 0.4.5 — Histórico do Pedido
+
+Adições:
+
+- Criada a migration `009_0_4_5_order_events_history.sql`.
+- Nova tabela `order_events` para registrar movimentos importantes do pedido.
+- Cliente vê uma linha do tempo em `meus-pedidos.html`.
+- Admin vê uma linha do tempo dentro de cada pedido na Sala do Criador.
+- O formulário de pedido registra evento inicial quando a tabela já está ativa.
+- A Sala do Criador registra eventos ao mudar status e salvar/enviar entrega final.
+- O histórico é append-only: eventos não são editados; se algo mudar, outro evento é registrado.
+
+Supabase:
+
+- Rode a migration 009 no SQL Editor para ativar o histórico real.
+- Sem a migration, o site continua funcionando, mas exibe apenas o fallback de criação do pedido.
+
+Próximo marco sugerido:
+
+- `0.5.0 — Chat por Pedido`, usando `order_messages` para conversa real entre cliente e Forja.
+
+## 0.5.0 — Chat por Pedido
+
+A versão 0.5.0 ativa o primeiro sistema real de conversa da Forja:
+
+- `chat.html` — página do cliente para conversar diretamente com a Forja sobre seus pedidos.
+- `chat-admin.html` — painel de conversas da Sala do Criador em formato inspirado em WhatsApp Web: contatos/pedidos à esquerda e conversa aberta à direita.
+- `js/chat-shared.js` — funções compartilhadas de mensagem, envio, renderização e assinatura de mensagens.
+- `js/chat.js` — lógica da página de chat do cliente.
+- `js/chat-admin.js` — lógica do painel de conversas do criador.
+- `js/chat-widget.js` — chat minimizado para o cliente continuar navegando pelo site enquanto conversa.
+- `css/chat.css` — estilo das páginas e do widget de chat.
+- `supabase/migrations/010_0_5_0_order_chat.sql` — policies e índices oficiais do chat por pedido.
+
+### Modelo de experiência
+
+Cliente:
+- acessa uma página inteira de chat;
+- escolhe o pedido em um seletor simples, sem lista lateral de contatos;
+- pode minimizar o chat e continuar navegando pelo site;
+- o widget minimizado continua disponível nas páginas públicas/logadas.
+
+Criador:
+- acessa `chat-admin.html` pela opção Conversas/Sala do Criador;
+- vê contatos/pedidos em uma coluna lateral;
+- abre uma conversa por vez na área principal;
+- responde como Forja Narrativa.
+
+### Banco
+
+O chat usa `order_messages`:
+
+- cliente só pode inserir mensagens como `sender_role = 'cliente'` nos próprios pedidos;
+- admin só pode inserir mensagens como `sender_role = 'admin'`;
+- ambos podem ler as conversas permitidas por RLS;
+- mensagens não são editadas, apenas enviadas em sequência.

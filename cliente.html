@@ -7,6 +7,7 @@
   <title>Fazer Pedido | Forja Narrativa</title>
 
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/chat.css" />
   <link rel="stylesheet" href="css/cliente.css" />
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -42,7 +43,20 @@
       </p>
     </section>
 
-    <section class="clientPanel">
+    <section class="clientPanel clientPanelGrid">
+      <aside class="clientOrderGuide" aria-label="Resumo do pedido selecionado">
+        <span class="guideEyebrow">Contrato de criação</span>
+        <h3 id="selectedPackageTitle">Escolha um caminho</h3>
+        <strong id="selectedPackagePrice">Pacote ainda não selecionado</strong>
+        <p id="selectedPackageDescription">Quando você escolher um pacote, a Forja mostra aqui o que será enviado junto do pedido.</p>
+        <ul id="selectedPackageItems">
+          <li>Nome de contato</li>
+          <li>Tipo de pedido</li>
+          <li>Ideia principal</li>
+        </ul>
+        <p class="guideNote" id="draftNotice">Rascunho automático ativo: sua ideia fica salva neste navegador até o envio.</p>
+      </aside>
+
       <form id="clientOrderForm" class="clientForm">
         <label>
           Nome para contato
@@ -88,6 +102,8 @@
   <script src="js/supabase.js"></script>
   <script src="js/utils/performance.js"></script>
   <script src="js/nav.js"></script>
+  <script src="js/chat-shared.js"></script>
+  <script src="js/chat-widget.js"></script>
   <script src="js/data/package-options.js"></script>
   <script src="js/cliente.js"></script>
   <script src="js/canvas/forge-particles.js"></script>

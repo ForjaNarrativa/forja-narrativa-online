@@ -37,6 +37,11 @@ function setAuthMessage(text, type) {
 function setMode(newMode) {
   mode = newMode;
 
+  const isRecovery = mode === "recovery";
+  authEmail.required = !isRecovery;
+  authEmail.disabled = isRecovery;
+  authEmail.closest("label")?.classList.toggle("is-hidden", isRecovery);
+
   if (mode === "login") {
     loginTab.classList.add("active");
     signupTab.classList.remove("active");

@@ -13,11 +13,20 @@ async function getForjaPackageData() {
   return { packages, ranks };
 }
 
+function escapeOptionValue(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
 function buildPackageOptions({ packages, ranks }, config = {}) {
   const {
     placeholder = "Selecione um pacote",
     includeMemorial = true,
-    emptyLabel = null
+    emptyLabel = null,
+    filterMode = false
   } = config;
 
   const firstOption = emptyLabel
@@ -25,11 +34,17 @@ function buildPackageOptions({ packages, ranks }, config = {}) {
     : `<option value="">${placeholder}</option>`;
 
   const mainOptions = packages
-    .map((pkg) => `<option value="${pkg.name} - ${pkg.priceLabel}">${pkg.name} — ${pkg.priceLabel}</option>`)
+    .map((pkg) => {
+      const value = filterMode ? pkg.name : `${pkg.name} - ${pkg.priceLabel}`;
+      return `<option value="${escapeOptionValue(value)}" data-package-id="${escapeOptionValue(pkg.id)}" data-package-kind="principal">${escapeOptionValue(pkg.name)} — ${escapeOptionValue(pkg.priceLabel)}</option>`;
+    })
     .join("");
 
   const rankOptions = ranks
-    .map((rank) => `<option value="${rank.name} - ${rank.priceLabel}">${rank.name} — ${rank.priceLabel}</option>`)
+    .map((rank) => {
+      const value = filterMode ? rank.name : `${rank.name} - ${rank.priceLabel}`;
+      return `<option value="${escapeOptionValue(value)}" data-package-id="${escapeOptionValue(rank.id)}" data-package-kind="memorial">${escapeOptionValue(rank.name)} — ${escapeOptionValue(rank.priceLabel)}</option>`;
+    })
     .join("");
 
   return `
@@ -59,11 +74,16 @@ async function loadPackageOptions() {
       select.innerHTML = buildPackageOptions(data, {
         includeMemorial: mode !== "main",
         placeholder: select.dataset.placeholder || "Selecione um pacote",
-        emptyLabel: isFilter ? "Todos os pacotes" : null
+        emptyLabel: isFilter ? "Todos os pacotes" : null,
+        filterMode: isFilter
       });
     });
+
+    window.forjaPackageData = data;
+    window.dispatchEvent(new CustomEvent("forja:packages-ready", { detail: data }));
   } catch (error) {
     console.warn("Mantendo opções fixas dos formulários.", error);
+    window.dispatchEvent(new CustomEvent("forja:packages-error", { detail: error }));
     selects.forEach((select) => {
       if (!select.options.length) {
         select.innerHTML = `<option value="">Não foi possível carregar os pacotes</option>`;
