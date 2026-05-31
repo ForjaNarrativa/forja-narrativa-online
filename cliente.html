@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Fazer Pedido | Forja Narrativa</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/cliente.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="embers" id="embers"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">F</div>
+      <div>
+        <h1>Fazer Pedido</h1>
+        <p>Envie sua ideia para a Forja</p>
+      </div>
+    </div>
+
+    <nav id="mainNav"></nav>
+  </header>
+
+  <main class="clientMain">
+    <section class="clientHero">
+      <span class="tag">Pedido logado</span>
+
+      <h2>
+        Envie
+        <strong>sua ideia.</strong>
+      </h2>
+
+      <p>
+        Seu pedido será ligado automaticamente à sua conta. Depois você poderá acompanhar tudo em Meus Pedidos.
+      </p>
+    </section>
+
+    <section class="clientPanel">
+      <form id="clientOrderForm" class="clientForm">
+        <label>
+          Nome para contato
+          <input type="text" id="clientName" placeholder="Seu nome" required />
+        </label>
+
+        <label>
+          Tipo de pedido
+          <select id="packageName" required>
+            <option value="">Selecione um pacote</option>
+            <option value="Ficha Essência - Promoção R$20">Ficha Essência — Promoção R$20</option>
+            <option value="Personagem Vivo - R$90">Personagem Vivo — R$90</option>
+            <option value="Arquivo Secreto - R$150">Arquivo Secreto — R$150</option>
+            <option value="Memorial Digital - R$250">Memorial Digital — R$250</option>
+          </select>
+        </label>
+
+        <label>
+          Ideia do personagem
+          <textarea
+            id="characterIdea"
+            rows="8"
+            placeholder="Conte sua ideia inicial, vibe, classe, aparência, história, referências..."
+            required
+          ></textarea>
+        </label>
+
+        <button type="submit" id="clientOrderBtn">
+          Enviar pedido para a Forja
+        </button>
+
+        <p id="clientMessage" class="clientMessage"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>Forja Narrativa © 2026 — Cada criação deixa uma marca.</p>
+  </footer>
+
+  <script src="js/supabase.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/cliente.js"></script>
+</body>
+</html>

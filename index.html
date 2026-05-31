@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Forja Narrativa | Personagens Vivos para RPG</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="embers" id="embers"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">F</div>
+      <div>
+        <h1>Forja Narrativa</h1>
+        <p>Da ideia ao personagem vivo</p>
+      </div>
+    </div>
+
+    <nav id="mainNav"></nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="heroText">
+        <span class="tag">Fichas • Dossiês • Memoriais digitais</span>
+
+        <h2>
+          Personagens não deveriam
+          <strong>morrer no papel.</strong>
+        </h2>
+
+        <p>
+          A Forja Narrativa transforma ideias simples em personagens vivos:
+          com história, aparência, personalidade, conflitos, frases marcantes
+          e presença dentro da sua campanha de RPG.
+        </p>
+
+        <div class="actions">
+          <a href="auth.html?next=cliente.html" class="btn primary">Fazer pedido</a>
+          <a href="#pacotes" class="btn secondary">Ver pacotes</a>
+        </div>
+      </div>
+
+      <div class="heroCard forgeCard">
+        <div class="cardTop">
+          <span>ARQUIVO ABERTO</span>
+          <strong>FORJA-001</strong>
+        </div>
+
+        <p><b>Status:</b> Encomendas abertas</p>
+        <p><b>Entrega:</b> ficha, dossiê ou memorial</p>
+        <p><b>Identidade:</b> ouro da forja e rachaduras roxas</p>
+
+        <div class="forgeCore">
+          <div class="forgeRing"></div>
+          <div class="forgeMark">F</div>
+        </div>
+
+        <div class="stamp">PERSONAGEM VIVO</div>
+      </div>
+    </section>
+
+    <section class="section" id="pacotes">
+      <div class="sectionTitle">
+        <span>Pacotes</span>
+        <h2>Escolha o nível da sua criação.</h2>
+      </div>
+
+      <div class="cards">
+        <article class="priceCard promo">
+          <div class="discount">50% OFF</div>
+          <h3>Ficha Essência</h3>
+          <p class="oldPrice">R$40</p>
+          <p class="price">R$20</p>
+          <p class="small">Promoção de lançamento — 8 vagas.</p>
+          <ul>
+            <li>Aparência</li>
+            <li>Personalidade</li>
+            <li>História curta</li>
+            <li>Objetivo</li>
+            <li>Frase marcante</li>
+          </ul>
+        </article>
+
+        <article class="priceCard">
+          <h3>Personagem Vivo</h3>
+          <p class="price">R$90</p>
+          <ul>
+            <li>Ficha completa</li>
+            <li>História detalhada</li>
+            <li>Conflitos internos</li>
+            <li>Relações importantes</li>
+            <li>Ganchos narrativos</li>
+          </ul>
+        </article>
+
+        <article class="priceCard">
+          <h3>Arquivo Secreto</h3>
+          <p class="price">R$150</p>
+          <ul>
+            <li>Dossiê premium</li>
+            <li>Versão pública</li>
+            <li>Versão do mestre</li>
+            <li>Segredos</li>
+            <li>Arco narrativo</li>
+          </ul>
+        </article>
+
+        <article class="priceCard">
+          <h3>Memorial Digital</h3>
+          <p class="price">R$250</p>
+          <ul>
+            <li>Dossiê premium</li>
+            <li>Página simples no site</li>
+            <li>Identidade visual</li>
+            <li>Registro digital</li>
+            <li>Link compartilhável</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section orderSection" id="pedido">
+      <div class="sectionTitle">
+        <span>Pedido logado</span>
+        <h2>Entre na Forja para enviar sua ideia.</h2>
+        <p>
+          Para facilitar sua vida, agora os pedidos ficam ligados à sua conta.
+          Depois de entrar, você pode acompanhar tudo em Meus Pedidos.
+        </p>
+
+        <div class="actions">
+          <a href="auth.html?next=cliente.html" class="btn primary">Entrar e fazer pedido</a>
+          <a href="pedidos.html" class="btn secondary">Ver meus pedidos</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contato">
+      <h2>Contato</h2>
+      <p>Também dá para falar direto pelo e-mail:</p>
+      <a href="mailto:forjanarrativa5790@gmail.com">forjanarrativa5790@gmail.com</a>
+    </section>
+  </main>
+
+  <footer>
+    <p>Forja Narrativa © 2026 — Personagens que não ficam só no papel.</p>
+  </footer>
+
+  <script src="js/supabase.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>

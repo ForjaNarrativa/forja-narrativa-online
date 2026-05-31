@@ -1,0 +1,286 @@
+.adminNavBtn {
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  background: rgba(0, 0, 0, 0.25);
+  padding: 10px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  transition: 0.25s ease;
+}
+
+.adminNavBtn:hover {
+  background: var(--gold);
+  color: #160e07;
+}
+
+.dangerBtn {
+  border-color: rgba(255, 107, 94, 0.5);
+  color: var(--danger);
+}
+
+.dangerBtn:hover {
+  background: var(--danger);
+  color: #160e07;
+}
+
+.adminMain {
+  position: relative;
+  z-index: 2;
+  padding-bottom: 70px;
+}
+
+.adminHero {
+  padding: 80px 6vw 40px;
+}
+
+.adminHero h2 {
+  margin: 20px 0;
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.adminHero h2 strong {
+  display: block;
+  color: var(--gold);
+  text-shadow:
+    0 0 30px rgba(226, 184, 90, 0.22),
+    0 0 40px rgba(158, 100, 216, 0.14);
+}
+
+.adminHero p {
+  max-width: 760px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.adminStats {
+  padding: 0 6vw 35px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.statCard {
+  padding: 24px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow:
+    0 0 35px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(158, 100, 216, 0.08);
+}
+
+.statCard span {
+  display: block;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.statCard strong {
+  color: var(--gold);
+  font-size: 2.6rem;
+}
+
+.adminTools {
+  padding: 0 6vw 30px;
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 18px;
+}
+
+.adminTools label {
+  color: var(--gold);
+  font-weight: bold;
+}
+
+.adminTools input,
+.adminTools select {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--line);
+  color: var(--text);
+  outline: none;
+  font: inherit;
+}
+
+.adminTools input:focus,
+.adminTools select:focus {
+  border-color: var(--gold);
+  box-shadow:
+    0 0 20px rgba(226, 184, 90, 0.12),
+    0 0 22px rgba(158, 100, 216, 0.08);
+}
+
+.ordersArea {
+  padding: 0 6vw;
+}
+
+.loadingBox {
+  padding: 24px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.ordersList {
+  display: grid;
+  gap: 18px;
+}
+
+.orderCard {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow:
+    0 0 35px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(158, 100, 216, 0.08);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.orderCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(226, 184, 90, 0.12), transparent 32%),
+    radial-gradient(circle at 0% 100%, rgba(158, 100, 216, 0.16), transparent 32%),
+    linear-gradient(145deg, transparent 0 48%, rgba(158, 100, 216, 0.16) 48.5%, transparent 49.3% 100%);
+  pointer-events: none;
+}
+
+.orderCard > * {
+  position: relative;
+  z-index: 1;
+}
+
+.orderTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+
+.orderTop h3 {
+  margin: 0;
+  color: var(--gold);
+  font-size: 1.5rem;
+}
+
+.orderDate {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.orderBadges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.badge {
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.8rem;
+  border-radius: 999px;
+}
+
+.badge.status {
+  color: var(--gold);
+  border-color: rgba(226, 184, 90, 0.45);
+}
+
+.badge.payment {
+  color: var(--purple);
+  border-color: rgba(158, 100, 216, 0.45);
+}
+
+.orderInfo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.orderInfo p,
+.orderIdea p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.orderInfo strong,
+.orderIdea strong {
+  color: var(--text);
+}
+
+.orderIdea {
+  background: rgba(0, 0, 0, 0.25);
+  border-left: 2px solid var(--gold);
+  padding: 14px;
+}
+
+.orderActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.orderActions button {
+  border: 1px solid rgba(226, 184, 90, 0.45);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--gold);
+  padding: 10px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  transition: 0.2s ease;
+}
+
+.orderActions button:hover {
+  background: var(--gold);
+  color: #160e07;
+  transform: translateY(-2px);
+}
+
+.emptyState {
+  padding: 28px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  text-align: center;
+}
+
+.errorBox {
+  padding: 24px;
+  background: rgba(255, 107, 94, 0.12);
+  border: 1px solid rgba(255, 107, 94, 0.45);
+  color: var(--danger);
+}
+
+@media (max-width: 850px) {
+  .adminStats,
+  .adminTools,
+  .orderInfo {
+    grid-template-columns: 1fr;
+  }
+
+  .orderTop {
+    flex-direction: column;
+  }
+
+  .orderBadges {
+    justify-content: flex-start;
+  }
+}

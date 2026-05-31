@@ -1,0 +1,130 @@
+.clientMain {
+  position: relative;
+  z-index: 2;
+  padding-bottom: 80px;
+}
+
+.clientHero {
+  padding: 80px 6vw 40px;
+}
+
+.clientHero h2 {
+  margin: 20px 0;
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.clientHero h2 strong {
+  display: block;
+  color: var(--gold);
+  text-shadow:
+    0 0 30px rgba(226, 184, 90, 0.22),
+    0 0 40px rgba(158, 100, 216, 0.14);
+}
+
+.clientHero p {
+  max-width: 760px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.clientPanel {
+  width: min(100% - 12vw, 920px);
+  margin: 0 auto;
+  display: grid;
+  gap: 24px;
+}
+
+.clientForm {
+  position: relative;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(226, 184, 90, 0.12), transparent 36%),
+    radial-gradient(circle at 0% 100%, rgba(158, 100, 216, 0.16), transparent 38%),
+    var(--panel);
+  border: 1px solid var(--line);
+  box-shadow:
+    0 0 45px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(158, 100, 216, 0.08);
+  padding: 30px;
+  overflow: hidden;
+}
+
+.clientForm::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(130deg, transparent 0 25%, rgba(158, 100, 216, 0.18) 25.4%, transparent 26.2% 100%),
+    linear-gradient(39deg, transparent 0 64%, rgba(158, 100, 216, 0.12) 64.4%, transparent 65.2% 100%);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.clientForm > * {
+  position: relative;
+  z-index: 1;
+}
+
+.clientForm label {
+  display: block;
+  margin-bottom: 20px;
+  color: var(--gold);
+  font-weight: bold;
+}
+
+.clientForm input,
+.clientForm select,
+.clientForm textarea {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--line);
+  color: var(--text);
+  outline: none;
+  font: inherit;
+}
+
+.clientForm input:focus,
+.clientForm select:focus,
+.clientForm textarea:focus {
+  border-color: var(--gold);
+  box-shadow:
+    0 0 20px rgba(226, 184, 90, 0.12),
+    0 0 22px rgba(158, 100, 216, 0.08);
+}
+
+.clientForm button {
+  width: 100%;
+  padding: 16px 22px;
+  border: 0;
+  background: var(--gold);
+  color: #160e07;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.25s ease;
+  font: inherit;
+}
+
+.clientForm button:hover {
+  transform: translateY(-2px);
+}
+
+.clientForm button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.clientMessage {
+  margin-top: 16px;
+  font-weight: bold;
+}
+
+.clientMessage.error {
+  color: var(--danger);
+}
+
+.clientMessage.success {
+  color: var(--success);
+}

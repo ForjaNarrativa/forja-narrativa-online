@@ -1,0 +1,163 @@
+.authPage {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+}
+
+.authCard {
+  position: relative;
+  width: min(100%, 500px);
+  padding: 42px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(226, 184, 90, 0.15), transparent 42%),
+    radial-gradient(circle at 0% 100%, rgba(158, 100, 216, 0.16), transparent 40%),
+    var(--panel);
+  border: 1px solid var(--line);
+  box-shadow:
+    0 0 50px rgba(0, 0, 0, 0.68),
+    inset 0 0 0 1px rgba(158, 100, 216, 0.08);
+  text-align: center;
+  overflow: hidden;
+}
+
+.authCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(130deg, transparent 0 25%, rgba(158, 100, 216, 0.18) 25.4%, transparent 26.2% 100%),
+    linear-gradient(39deg, transparent 0 64%, rgba(158, 100, 216, 0.12) 64.4%, transparent 65.2% 100%);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.authCard > * {
+  position: relative;
+  z-index: 1;
+}
+
+.loginSymbol {
+  width: 74px;
+  height: 74px;
+  margin: 0 auto 20px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  color: var(--gold);
+  font-size: 2.4rem;
+  font-weight: bold;
+  box-shadow:
+    0 0 25px rgba(226, 184, 90, 0.24),
+    inset 0 0 20px rgba(158, 100, 216, 0.16);
+}
+
+.authCard h1 {
+  margin: 10px 0 14px;
+  color: var(--gold);
+  font-size: 2.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.authText {
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.authTabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.authTabs button {
+  padding: 12px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+}
+
+.authTabs button.active {
+  background: var(--gold);
+  color: #160e07;
+  border-color: var(--gold);
+  font-weight: bold;
+}
+
+.authForm {
+  text-align: left;
+}
+
+.authForm label {
+  display: block;
+  margin-bottom: 18px;
+  color: var(--gold);
+  font-weight: bold;
+}
+
+.authForm input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--line);
+  color: var(--text);
+  outline: none;
+  font: inherit;
+}
+
+.authForm input:focus {
+  border-color: var(--gold);
+  box-shadow:
+    0 0 20px rgba(226, 184, 90, 0.12),
+    0 0 22px rgba(158, 100, 216, 0.08);
+}
+
+.authForm button {
+  width: 100%;
+  padding: 15px 20px;
+  border: 0;
+  background: var(--gold);
+  color: #160e07;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.25s ease;
+  font: inherit;
+}
+
+.authForm button:hover {
+  transform: translateY(-2px);
+}
+
+.authMessage {
+  margin-top: 16px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.authMessage.success {
+  color: var(--success);
+}
+
+.authMessage.error {
+  color: var(--danger);
+}
+
+.backLink {
+  display: inline-block;
+  margin-top: 24px;
+  color: var(--muted);
+  transition: 0.25s ease;
+}
+
+.backLink:hover {
+  color: var(--gold);
+}

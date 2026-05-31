@@ -1,0 +1,187 @@
+.ordersClientMain {
+  position: relative;
+  z-index: 2;
+  padding-bottom: 80px;
+}
+
+.ordersClientHero {
+  padding: 80px 6vw 40px;
+}
+
+.ordersClientHero h2 {
+  margin: 20px 0;
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.ordersClientHero h2 strong {
+  display: block;
+  color: var(--gold);
+  text-shadow:
+    0 0 30px rgba(226, 184, 90, 0.22),
+    0 0 40px rgba(158, 100, 216, 0.14);
+}
+
+.ordersClientHero p {
+  max-width: 760px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.ordersClientArea {
+  padding: 0 6vw;
+}
+
+.clientOrdersLoading,
+.emptyClientOrders,
+.clientOrderCard {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow:
+    0 0 35px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(158, 100, 216, 0.08);
+}
+
+.clientOrdersLoading,
+.emptyClientOrders {
+  padding: 28px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.clientOrdersList {
+  display: grid;
+  gap: 18px;
+}
+
+.clientOrderCard {
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+}
+
+.clientOrderCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(226, 184, 90, 0.12), transparent 32%),
+    radial-gradient(circle at 0% 100%, rgba(158, 100, 216, 0.16), transparent 32%),
+    linear-gradient(145deg, transparent 0 48%, rgba(158, 100, 216, 0.16) 48.5%, transparent 49.3% 100%);
+  pointer-events: none;
+}
+
+.clientOrderCard > * {
+  position: relative;
+  z-index: 1;
+}
+
+.clientOrderTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 16px;
+}
+
+.clientOrderTop h3 {
+  margin: 0;
+  color: var(--gold);
+  font-size: 1.5rem;
+}
+
+.clientOrderTop span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.clientOrderBadges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.clientOrderBadge {
+  padding: 7px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.clientOrderBadge.status {
+  color: var(--gold);
+  border-color: rgba(226, 184, 90, 0.45);
+}
+
+.clientOrderBadge.payment {
+  color: var(--purple);
+  border-color: rgba(158, 100, 216, 0.45);
+}
+
+.clientOrderGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.clientOrderGrid div,
+.clientOrderIdea {
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(226, 184, 90, 0.18);
+}
+
+.clientOrderGrid span,
+.clientOrderIdea span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin-bottom: 6px;
+}
+
+.clientOrderGrid strong {
+  color: var(--text);
+}
+
+.clientOrderIdea {
+  border-left: 2px solid var(--purple);
+}
+
+.clientOrderIdea p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.newOrderLink {
+  display: inline-block;
+  margin-top: 24px;
+  padding: 13px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  transition: 0.25s ease;
+}
+
+.newOrderLink:hover {
+  background: var(--gold);
+  color: #160e07;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 700px) {
+  .clientOrderTop,
+  .clientOrderGrid {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .clientOrderBadges {
+    justify-content: flex-start;
+  }
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Entrar na Forja | Forja Narrativa</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="embers" id="embers"></div>
+
+  <main class="authPage">
+    <section class="authCard">
+      <div class="loginSymbol">F</div>
+
+      <p class="tag">Conta da Forja</p>
+
+      <h1>Entrar na Forja</h1>
+
+      <p class="authText">
+        Entre ou crie uma conta para fazer pedidos e acompanhar suas criações.
+      </p>
+
+      <div class="authTabs">
+        <button id="loginTab" class="active" type="button">Entrar</button>
+        <button id="signupTab" type="button">Criar conta</button>
+      </div>
+
+      <form id="authForm" class="authForm">
+        <label>
+          E-mail
+          <input type="email" id="authEmail" placeholder="seuemail@gmail.com" required />
+        </label>
+
+        <label>
+          Senha
+          <input type="password" id="authPassword" placeholder="Sua senha" required />
+        </label>
+
+        <button type="submit" id="authBtn">Entrar</button>
+
+        <p id="authMessage" class="authMessage"></p>
+      </form>
+
+      <a class="backLink" href="index.html">Voltar ao site</a>
+    </section>
+  </main>
+
+  <script src="js/supabase.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Entrada da Forja | Login</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/login.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="embers" id="embers"></div>
+
+  <main class="loginPage">
+    <section class="loginCard">
+      <div class="loginSymbol">F</div>
+
+      <p class="tag">Área interna</p>
+
+      <h1>Entrada da Forja</h1>
+
+      <p class="loginText">
+        Acesso reservado para administração da Forja Narrativa.
+      </p>
+
+      <form id="loginForm" class="loginForm">
+        <label>
+          E-mail
+          <input
+            type="email"
+            id="loginEmail"
+            placeholder="forjanarrativa5790@gmail.com"
+            required
+          />
+        </label>
+
+        <label>
+          Senha
+          <input
+            type="password"
+            id="loginPassword"
+            placeholder="Senha de admin"
+            required
+          />
+        </label>
+
+        <button type="submit" id="loginBtn">
+          Entrar no Painel
+        </button>
+
+        <p id="loginMessage" class="loginMessage"></p>
+      </form>
+
+      <a class="backLink" href="index.html">Voltar ao site</a>
+    </section>
+  </main>
+
+  <script src="js/supabase.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

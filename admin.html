@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Painel da Forja | Pedidos</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="embers" id="embers"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">F</div>
+      <div>
+        <h1>Painel da Forja</h1>
+        <p>Pedidos recebidos no banco de dados</p>
+      </div>
+    </div>
+
+    <nav>
+      <a href="index.html">Voltar ao site</a>
+      <button id="refreshBtn" class="adminNavBtn">Atualizar</button>
+      <button id="logoutBtn" class="adminNavBtn dangerBtn">Sair</button>
+    </nav>
+  </header>
+
+  <main class="adminMain">
+    <section class="adminHero">
+      <span class="tag">Área interna • admin</span>
+
+      <h2>
+        Pedidos
+        <strong>da Forja</strong>
+      </h2>
+
+      <p>
+        Aqui aparecem os pedidos enviados pelo formulário do site.
+        Essa versão já exige login de administrador.
+      </p>
+    </section>
+
+    <section class="adminStats">
+      <article class="statCard">
+        <span>Total</span>
+        <strong id="totalOrders">0</strong>
+      </article>
+
+      <article class="statCard">
+        <span>Aguardando análise</span>
+        <strong id="waitingOrders">0</strong>
+      </article>
+
+      <article class="statCard">
+        <span>Não pagos</span>
+        <strong id="unpaidOrders">0</strong>
+      </article>
+    </section>
+
+    <section class="adminTools">
+      <label>
+        Buscar pedido
+        <input type="text" id="searchInput" placeholder="Nome, e-mail, pacote ou ideia..." />
+      </label>
+
+      <label>
+        Filtrar pacote
+        <select id="packageFilter">
+          <option value="">Todos os pacotes</option>
+          <option value="Ficha Essência">Ficha Essência</option>
+          <option value="Personagem Vivo">Personagem Vivo</option>
+          <option value="Arquivo Secreto">Arquivo Secreto</option>
+          <option value="Memorial Digital">Memorial Digital</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="ordersArea">
+      <div id="loadingBox" class="loadingBox">
+        Verificando acesso...
+      </div>
+
+      <div id="ordersList" class="ordersList"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Forja Narrativa © 2026 — Painel interno.</p>
+  </footer>
+
+  <script src="js/supabase.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
