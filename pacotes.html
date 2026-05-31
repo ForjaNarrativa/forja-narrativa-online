@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="css/style.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body>
+<body class="packagesPage">
   <div class="noise"></div>
   <div class="embers" id="embers"></div>
   <canvas class="forgeCanvas" id="forgeCanvas" aria-hidden="true"></canvas>
@@ -24,44 +24,92 @@
   </header>
 
   <main>
-    <section class="pageHero compactHero">
-      <span class="tag">Pacotes principais • Memorial da Forja</span>
-      <h2>Escolha o nível da sua criação.</h2>
-      <p>
-        Os pacotes principais organizam e desenvolvem personagens, documentos e memórias.
-        O Memorial da Forja é uma contribuição simbólica para eternizar uma criação no site.
-      </p>
+    <section class="packagesHero" data-package-hero>
+      <div class="packagesHeroAura" aria-hidden="true"></div>
+      <div class="packagesHeroGrid">
+        <div class="packagesHeroText">
+          <span class="tag">Pacotes principais • Memorial da Forja</span>
+          <h2>Escolha o formato da sua chama.</h2>
+          <p>
+            Aqui você decide se sua ideia será lapidada como personagem, organizada como arquivo
+            ou eternizada como memória. A Forja não vende só texto: ela ajuda sua criação a ganhar forma,
+            presença e lugar no mundo.
+          </p>
+          <div class="actions packagesHeroActions">
+            <a href="#pacotes-principais" class="btn primary">Ver pacotes</a>
+            <a href="#memorial-ranks" class="btn secondary">Ranks do Memorial</a>
+            <a href="cliente.html" class="btn ghostBtn">Fazer pedido</a>
+          </div>
+        </div>
+
+        <div class="packageCompass" aria-hidden="true">
+          <div class="compassRing"></div>
+          <div class="compassCore">
+            <span>FORJA</span>
+            <strong>4</strong>
+            <small>caminhos</small>
+          </div>
+          <div class="compassLabel compassLabelTop">criar</div>
+          <div class="compassLabel compassLabelRight">documentar</div>
+          <div class="compassLabel compassLabelBottom">eternizar</div>
+          <div class="compassLabel compassLabelLeft">lapidar</div>
+        </div>
+      </div>
     </section>
 
-    <section class="section">
-      <div class="sectionTitle">
+    <section class="packagesSection" id="pacotes-principais">
+      <div class="sectionTitle packageSectionTitle">
         <span>Serviços narrativos</span>
         <h2>Pacotes principais</h2>
-        <p>Para transformar uma ideia em personagem, arquivo, dossiê ou memória escrita.</p>
+        <p>
+          Quatro níveis para transformar uma faísca criativa em uma entrega clara, bonita e pronta para usar.
+        </p>
       </div>
 
-      <div class="cards serviceCards" data-packages-list>
+      <div class="packageShowcase" data-packages-list>
         <div class="dataLoading">Carregando pacotes principais...</div>
       </div>
     </section>
 
-    <section class="section memorialPricesSection">
-      <div class="sectionTitle">
+    <section class="packageCompareSection">
+      <div class="packageCompareBox">
+        <div>
+          <span>Como escolher?</span>
+          <h2>Se a ideia ainda está crua, comece pela Essência. Se ela já dói no peito, talvez ela peça Legado.</h2>
+        </div>
+        <div class="compareMiniGrid">
+          <p><b>Ficha Essência</b> organiza a base.</p>
+          <p><b>Personagem Vivo</b> aprofunda emoção e presença.</p>
+          <p><b>Arquivo Secreto</b> transforma em documento imersivo.</p>
+          <p><b>Memorial Digital</b> registra significado e despedida.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="memorialStoreSection" id="memorial-ranks">
+      <div class="memorialStoreBackdrop" aria-hidden="true"></div>
+      <div class="sectionTitle packageSectionTitle">
         <span>Contribuição memorial</span>
         <h2>Memorial da Forja</h2>
         <p>
-          Chama, Estátua e Santuário são contribuições memoriais acessíveis.
-          Legado é maior porque inclui página exclusiva e mexe diretamente no código/site.
+          Os ranks do Memorial são formas simbólicas e acessíveis de salvar uma personagem na terra de memórias da Forja.
+          O Legado custa mais porque cria uma página exclusiva dentro do site.
         </p>
       </div>
 
-      <div class="memorialRankGrid" data-ranks-list>
+      <div class="memorialRankPath" data-ranks-list>
         <div class="dataLoading">Carregando ranks do Memorial...</div>
       </div>
 
-      <div class="actions sectionActions">
-        <a href="pedidos.html" class="btn primary">Fazer pedido</a>
-        <a href="memorial.html" class="btn secondary">Ver Memorial</a>
+      <div class="memorialStoreNote" data-gsap-card>
+        <strong>Pacotes principais criam e organizam. Memorial eterniza.</strong>
+        <p>
+          Você pode pedir uma criação completa nos pacotes principais e, se quiser, também colocar essa personagem no Memorial da Forja.
+        </p>
+        <div class="actions sectionActions">
+          <a href="cliente.html" class="btn primary">Fazer pedido</a>
+          <a href="memorial.html" class="btn secondary">Ver Memorial</a>
+        </div>
       </div>
     </section>
   </main>

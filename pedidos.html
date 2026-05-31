@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/pedidos.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body>
+<body class="pedidosPage">
   <div class="noise"></div>
   <div class="embers" id="embers"></div>
   <canvas class="forgeCanvas" id="forgeCanvas" aria-hidden="true"></canvas>
@@ -25,41 +25,105 @@
   </header>
 
   <main>
-    <section class="pageHero compactHero">
-      <span class="tag">Pedido • Conversa • Criação</span>
-      <h2>Você não precisa ter tudo pronto para começar.</h2>
-      <p>
-        Pode chegar com uma ideia completa, uma personagem quase formada, uma campanha inteira
-        ou só uma faísca. A Forja ajuda a organizar, expandir e transformar isso em uma criação com identidade.
-      </p>
-      <div class="actions">
-        <a href="auth.html?next=cliente.html" class="btn primary">Entrar e enviar pedido</a>
-        <a href="meus-pedidos.html" class="btn secondary">Ver meus pedidos</a>
+    <section class="ordersHero" aria-labelledby="ordersHeroTitle">
+      <div class="ordersHeroGlow" aria-hidden="true"></div>
+      <div class="ordersHeroText">
+        <span class="tag">Pedido • conversa • criação</span>
+        <h2 id="ordersHeroTitle">Toda grande criação pode começar incompleta.</h2>
+        <p>
+          Você pode chegar com uma personagem inteira, uma campanha marcante, um NPC perdido,
+          uma ideia confusa ou só uma frase. A Forja transforma essa faísca em personagem,
+          documento, dossiê ou memória com identidade própria.
+        </p>
+        <div class="actions ordersHeroActions">
+          <a href="auth.html?next=cliente.html" class="btn primary">Entrar e enviar pedido</a>
+          <a href="pacotes.html" class="btn secondary">Ver pacotes antes</a>
+          <a href="meus-pedidos.html" class="btn ghostBtn">Acompanhar pedido</a>
+        </div>
       </div>
+
+      <aside class="ordersContract" aria-label="Resumo do pedido">
+        <div class="contractSeal">FN</div>
+        <span>Contrato de criação</span>
+        <h3>Da faísca ao arquivo final</h3>
+        <p>
+          A Forja não exige uma ideia perfeita. Ela precisa de intenção, referências quando existirem
+          e espaço para lapidar junto com você.
+        </p>
+        <div class="contractLines" aria-hidden="true">
+          <i></i><i></i><i></i><i></i>
+        </div>
+      </aside>
     </section>
 
-    <section class="section">
-      <div class="sectionTitle">
+    <section class="ordersPathSection" aria-labelledby="ordersPathTitle">
+      <div class="sectionTitle ordersSectionTitle">
         <span>Como funciona</span>
-        <h2>Fluxo de encomenda</h2>
+        <h2 id="ordersPathTitle">O caminho do pedido</h2>
+        <p>Um fluxo simples para a ideia não se perder no meio do caos.</p>
       </div>
 
-      <div class="stepsGrid">
-        <article class="stepCard"><span>01</span><h3>Escolha um pacote</h3><p>Veja qual entrega combina com sua ideia: personagem, dossiê, memorial ou rank do Memorial da Forja.</p></article>
-        <article class="stepCard"><span>02</span><h3>Envie as informações</h3><p>Conte o que já existe: nome, vibe, aparência, personalidade, história, referências ou só a faísca inicial.</p></article>
-        <article class="stepCard"><span>03</span><h3>Conversa e ajuste</h3><p>A Forja organiza a ideia com você, ajustando tom, proposta e detalhes importantes.</p></article>
-        <article class="stepCard"><span>04</span><h3>Receba a criação</h3><p>O resultado é entregue como texto organizado, documento, memória ou página, dependendo do pacote.</p></article>
+      <div class="ordersPath" aria-label="Etapas do pedido">
+        <article class="orderStep" data-gsap-card>
+          <span>01</span>
+          <h3>Escolha o caminho</h3>
+          <p>Selecione um pacote principal ou um rank do Memorial da Forja.</p>
+        </article>
+        <article class="orderStep" data-gsap-card>
+          <span>02</span>
+          <h3>Envie a faísca</h3>
+          <p>Conte o que já existe: nome, aparência, personalidade, história, vibe ou referências.</p>
+        </article>
+        <article class="orderStep" data-gsap-card>
+          <span>03</span>
+          <h3>Ajuste em conversa</h3>
+          <p>A Forja conversa com você para entender tom, intenção e detalhes importantes.</p>
+        </article>
+        <article class="orderStep" data-gsap-card>
+          <span>04</span>
+          <h3>Receba o resultado</h3>
+          <p>Você recebe a criação organizada conforme o pacote combinado.</p>
+        </article>
       </div>
     </section>
 
-    <section class="section orderInfoSection">
-      <div class="sectionTitle">
-        <span>O que enviar</span>
-        <h2>Informações que ajudam a Forja</h2>
-        <p>Não precisa preencher tudo com perfeição. Ideias incompletas também são aceitas.</p>
+    <section class="sparkSection" aria-labelledby="sparkTitle">
+      <div class="sparkText">
+        <span class="tag">Ideias incompletas são aceitas</span>
+        <h2 id="sparkTitle">Não precisa chegar com tudo pronto.</h2>
+        <p>
+          Muita gente criativa trava porque acha que a ideia precisa estar perfeita antes de pedir ajuda.
+          Na Forja, o pedido pode nascer de três jeitos:
+        </p>
       </div>
 
-      <div class="infoListGrid">
+      <div class="sparkGrid">
+        <article class="sparkCard" data-gsap-card>
+          <strong>Faísca</strong>
+          <h3>Tenho só uma ideia</h3>
+          <p>Uma frase, estética, cena, poder, trauma, nome ou conceito já pode ser suficiente para começar.</p>
+        </article>
+        <article class="sparkCard" data-gsap-card>
+          <strong>Metal bruto</strong>
+          <h3>Tenho partes soltas</h3>
+          <p>Aparência, personalidade, história e referências existem, mas ainda precisam virar algo coeso.</p>
+        </article>
+        <article class="sparkCard" data-gsap-card>
+          <strong>Peça quase pronta</strong>
+          <h3>Tenho muito material</h3>
+          <p>A Forja organiza, melhora a apresentação, fortalece a identidade e dá acabamento narrativo.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="orderInfoSection" aria-labelledby="infoTitle">
+      <div class="sectionTitle ordersSectionTitle">
+        <span>O que enviar</span>
+        <h2 id="infoTitle">Checklist da Forja</h2>
+        <p>Use isso como guia. Não é obrigatório preencher tudo com perfeição.</p>
+      </div>
+
+      <div class="infoListGrid orderChecklist">
         <div>Nome da pessoa e contato</div>
         <div>Pacote escolhido</div>
         <div>Nome da personagem/projeto</div>
@@ -73,8 +137,25 @@
       </div>
 
       <p class="orderTrustNote">
-        O pedido pode começar simples. A conversa direta existe justamente para lapidar a ideia, ajustar detalhes e transformar a faísca em algo que pareça vivo.
+        A conversa direta existe para lapidar. O objetivo não é julgar a ideia: é entender o que ela quer ser
+        e dar uma forma bonita, organizada e viva para ela.
       </p>
+    </section>
+
+    <section class="orderPortal" aria-labelledby="portalTitle">
+      <div class="portalRings" aria-hidden="true"></div>
+      <div class="portalContent">
+        <span class="tag">Portal de pedido</span>
+        <h2 id="portalTitle">Pronto para enviar sua faísca?</h2>
+        <p>
+          Entre na sua conta da Forja para registrar o pedido, acompanhar o status e manter tudo salvo.
+          Se ainda não tiver conta, a página de entrada também permite cadastro.
+        </p>
+        <div class="actions portalActions">
+          <a href="auth.html?next=cliente.html" class="btn primary">Começar pedido</a>
+          <a href="meus-pedidos.html" class="btn secondary">Ver meus pedidos</a>
+        </div>
+      </div>
     </section>
   </main>
 

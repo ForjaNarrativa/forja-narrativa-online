@@ -9,27 +9,47 @@ function createList(items) {
 }
 
 function createPackageCard(pkg, index) {
-  const promoClass = index === 0 ? " promo" : "";
+  const tier = index + 1;
+  const isFeatured = pkg.id === "personagem-vivo" || pkg.id === "arquivo-secreto";
+  const featuredClass = isFeatured ? " featured" : "";
+
   return `
-    <article class="priceCard${promoClass}" data-gsap-card>
-      <div class="discount">${pkg.badge}</div>
-      <h3>${pkg.name}</h3>
-      <p class="price">${pkg.priceLabel}</p>
-      <p class="small">${pkg.short}</p>
-      <p class="idealFor"><b>Ideal para:</b> ${pkg.idealFor}</p>
-      ${createList(pkg.items)}
+    <article class="forgePackageCard${featuredClass}" data-gsap-card style="--tier:${tier}">
+      <div class="packageCardTopline">
+        <span>${pkg.badge}</span>
+        <small>Pacote ${String(tier).padStart(2, "0")}</small>
+      </div>
+
+      <div class="packageCardHeader">
+        <h3>${pkg.name}</h3>
+        <p class="packagePrice">${pkg.priceLabel}</p>
+      </div>
+
+      <p class="packageShort">${pkg.short}</p>
+      <p class="packageIdeal"><b>Ideal para:</b> ${pkg.idealFor}</p>
+
+      <div class="packageIncludes">
+        <span>Inclui</span>
+        ${createList(pkg.items)}
+      </div>
+
+      <a href="cliente.html" class="packageOrderLink" aria-label="Fazer pedido do pacote ${pkg.name}">Escolher este pacote</a>
     </article>
   `;
 }
 
-function createRankCard(rank) {
+function createRankCard(rank, index) {
   const legacyClass = rank.id === "legado" ? " legacy" : "";
   return `
-    <article class="rankPriceCard${legacyClass}" data-gsap-card>
-      <span>${rank.name}</span>
-      <strong>${rank.priceLabel}</strong>
-      <p>${rank.description}</p>
-      <small>${rank.visual}</small>
+    <article class="memorialStoreRank${legacyClass}" data-gsap-card style="--rank:${index + 1}">
+      <div class="rankOrb"><span>${index + 1}</span></div>
+      <div>
+        <span class="rankRegion">${rank.region}</span>
+        <h3>${rank.name}</h3>
+        <strong>${rank.priceLabel}</strong>
+        <p>${rank.description}</p>
+        <small>${rank.visual}</small>
+      </div>
     </article>
   `;
 }

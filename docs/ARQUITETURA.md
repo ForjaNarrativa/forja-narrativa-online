@@ -128,3 +128,50 @@ Mudanças:
 - Os chibis ficaram maiores e com melhor destaque visual.
 - A versão mobile agora organiza a sala em sequência vertical: Jhonata → fenda → Lumi.
 - Mantida a troca de sprite por hover no PC e toque no celular.
+
+## Versão 0.3.6 — Créditos em realidades abertas
+
+- Remake visual da página `creditos.html` sem caixa/card central.
+- Jhonata e Lumi agora flutuam em lados opostos da mesma cena.
+- Lado Jhonata: paleta preta/dourada, fogo dourado e partículas de cinza.
+- Lado Lumi: paleta azul/roxa, telas holográficas e linhas de código flutuando.
+- Centro: fenda/distorção misturando dourado, roxo e azul.
+- Mantida a troca de sprite por hover no PC e toque no celular.
+
+## Versão 0.3.7 — Remake da página Início
+
+Mudanças:
+
+- `index.html` foi refeito como uma entrada cinematográfica da Forja, não apenas um hero com card.
+- A primeira dobra virou uma cena aberta com brilho dourado, rachaduras roxas, núcleo/símbolo da Forja e CTA direto.
+- Adicionado o bloco **Manifesto da Forja**, explicando a missão: proteger ideias criativas e ajudar criações a respirarem.
+- Adicionado fluxo visual **Faísca → Forja → Legado**.
+- Os caminhos principais agora aparecem como áreas de navegação mais imersivas: Pacotes, Pedidos e Memorial.
+- Adicionada seção de promessa criativa para reforçar que ideias incompletas também têm valor.
+- `js/animations/forja-gsap.js` foi atualizado para animar também os novos blocos do index.
+
+## Versão 0.3.8 — Remake da página Pacotes
+
+Mudanças:
+
+- `pacotes.html` foi refeito como uma vitrine principal da Forja, com hero próprio e navegação direta para pacotes, Memorial e pedido.
+- Os pacotes principais agora aparecem como cartões premium gerados por JSON, com preço grande, descrição, lista de entregas e botão individual de escolha.
+- Adicionada seção de orientação “Como escolher?”, explicando rapidamente a diferença entre os quatro pacotes principais.
+- Os ranks do Memorial agora aparecem como uma trilha/caminho de contribuição memorial, separada dos pacotes principais.
+- Mantida a lógica de dados em `data/json/packages.json` e `data/json/memorial-ranks.json`.
+- `js/data/render-packages.js` foi atualizado para gerar a nova estrutura visual.
+- `css/style.css` recebeu os estilos da página `packagesPage`, incluindo bússola, cards, trilha de ranks e responsividade.
+
+## Versão 0.3.9 — Remake da página Pedidos
+
+Mudanças:
+
+- `pedidos.html` foi refeito como a página explicativa oficial de encomendas da Forja.
+- A página agora abre com uma cena própria de pedido, com texto mais emocional e CTAs para entrar, ver pacotes e acompanhar pedidos.
+- Adicionado um cartão visual de “Contrato de criação”, reforçando a ideia de que o pedido vai da faísca ao arquivo final.
+- Criado o fluxo visual **Escolha o caminho → Envie a faísca → Ajuste em conversa → Receba o resultado**.
+- Adicionada seção para explicar que ideias incompletas são aceitas: Faísca, Metal bruto e Peça quase pronta.
+- O checklist de informações ganhou aparência mais polida e continua deixando claro que nada precisa estar perfeito.
+- Adicionado um “Portal de pedido” final com CTA para começar pedido ou ver pedidos já enviados.
+- `css/pedidos.css` recebeu a identidade visual nova da página, com efeitos dourados/roxos, contrato, trilha de etapas, cards e responsividade.
+- `js/animations/forja-gsap.js` foi atualizado para animar os novos blocos da página.

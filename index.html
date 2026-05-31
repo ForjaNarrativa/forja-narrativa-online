@@ -10,7 +10,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body>
+<body class="homePage">
   <div class="noise"></div>
   <div class="embers" id="embers"></div>
   <canvas class="forgeCanvas" id="forgeCanvas" aria-hidden="true"></canvas>
@@ -27,111 +27,135 @@
     <nav id="mainNav"></nav>
   </header>
 
-  <main>
-    <section class="hero homeHero">
-      <div class="heroText">
+  <main class="homeMain">
+    <section class="homeOpenScene" aria-labelledby="homeTitle">
+      <div class="homeSceneBg" aria-hidden="true">
+        <div class="homeGoldFlare"></div>
+        <div class="homePurpleCrack"></div>
+        <div class="homeForgeGate"></div>
+        <span class="homeRune runeOne">✦</span>
+        <span class="homeRune runeTwo">◆</span>
+        <span class="homeRune runeThree">✧</span>
+      </div>
+
+      <div class="homeHeroText">
         <span class="tag">Oficina criativa • RPG • Personagens • Memórias</span>
 
-        <h2>
-          Sua criatividade não precisa
-          <strong>nascer pronta.</strong>
+        <h2 id="homeTitle">
+          Sua ideia não precisa nascer pronta.
+          <strong>Ela só precisa continuar viva.</strong>
         </h2>
 
         <p>
-          A Forja Narrativa transforma faíscas de ideia em personagens vivos,
-          fichas narrativas, dossiês, histórias e memoriais digitais. Aqui, uma
-          criação não precisa começar perfeita. Ela só precisa continuar viva.
+          A Forja Narrativa transforma faíscas de imaginação em personagens vivos,
+          fichas narrativas, dossiês imersivos, histórias organizadas e memoriais digitais.
+          Você chega com uma ideia. A Forja ajuda a dar forma, presença e legado.
         </p>
 
-        <div class="actions">
+        <div class="actions homeActions">
           <a href="pacotes.html" class="btn primary">Ver pacotes</a>
-          <a href="pedidos.html" class="btn secondary">Fazer pedido</a>
-          <a href="memorial.html" class="btn ghostBtn">Conhecer Memorial</a>
+          <a href="pedidos.html" class="btn secondary">Como pedir</a>
+          <a href="cliente.html" class="btn ghostBtn">Fazer pedido</a>
         </div>
       </div>
 
-      <div class="heroCard forgeCard">
-        <div class="cardTop">
-          <span>FORJA ACESA</span>
-          <strong>ONLINE</strong>
+      <aside class="homeForgeRelic" aria-label="Resumo da Forja Narrativa">
+        <div class="relicOrb">
+          <img src="assets/svg/logo-forja.svg" alt="" aria-hidden="true" />
         </div>
-
-        <p><b>Missão:</b> motivar pessoas criativas a continuarem criando.</p>
-        <p><b>Entrega:</b> personagens, dossiês, arquivos e memórias.</p>
-        <p><b>Marca:</b> ouro da forja com rachaduras roxas.</p>
-
-        <div class="forgeCore">
-          <div class="forgeRing"></div>
-          <div class="forgeMark">F</div>
+        <div class="relicText">
+          <span>FORJA ONLINE</span>
+          <strong>Ideias ganham forma. Histórias ganham vida.</strong>
+          <p>
+            Uma oficina para criadores que querem organizar personagens, campanhas,
+            homenagens e mundos sem deixar a própria criatividade apagar.
+          </p>
         </div>
-
-        <div class="stamp">IDEIA VIVA</div>
-      </div>
+      </aside>
     </section>
 
-    <section class="section splitIntro">
-      <div class="sectionTitle">
-        <span>O que é a Forja?</span>
-        <h2>Uma oficina para dar forma ao que ainda está brilhando na cabeça.</h2>
+    <section class="homeManifesto" aria-labelledby="manifestoTitle">
+      <div class="sectionTitle centerTitle">
+        <span>Manifesto da Forja</span>
+        <h2 id="manifestoTitle">A Forja não cria no seu lugar. Ela ajuda sua criação a respirar.</h2>
+        <p>
+          Ideias incompletas são bem-vindas. Personagens quebrados são bem-vindos.
+          Mundos bagunçados são bem-vindos. O trabalho da Forja é ouvir a faísca,
+          lapidar o metal e transformar sentimento em narrativa.
+        </p>
       </div>
 
-      <div class="introGrid">
-        <article class="lorePanel">
-          <h3>Para quem tem uma faísca</h3>
-          <p>
-            Você pode chegar com uma personagem inteira, uma campanha marcante,
-            um NPC importante ou só uma ideia bagunçada. A Forja ajuda a organizar,
-            expandir e transformar isso em algo com identidade.
-          </p>
+      <div class="manifestoFlow">
+        <article class="flowStep">
+          <span>01</span>
+          <h3>Faísca</h3>
+          <p>Você traz uma personagem, campanha, NPC, criatura, lembrança ou só uma ideia solta.</p>
         </article>
 
-        <article class="lorePanel">
-          <h3>Para quem quer presença</h3>
-          <p>
-            Aparência, personalidade, história, conflito, frase marcante, simbolismo
-            e documento narrativo. A ideia é fazer a criação parecer viva de verdade,
-            pronta para RPG, história, universo próprio ou homenagem.
-          </p>
+        <article class="flowStep">
+          <span>02</span>
+          <h3>Forja</h3>
+          <p>A ideia é organizada em aparência, personalidade, história, conflito, simbolismo e presença.</p>
         </article>
 
-        <article class="lorePanel">
-          <h3>Para quem quer legado</h3>
-          <p>
-            Algumas criações merecem ser lembradas. O Memorial da Forja existe para
-            guardar personagens que marcaram campanhas, histórias e pessoas criativas.
-          </p>
+        <article class="flowStep">
+          <span>03</span>
+          <h3>Legado</h3>
+          <p>A criação sai pronta para ser usada, apresentada, guardada ou eternizada no Memorial.</p>
         </article>
       </div>
     </section>
 
-    <section class="section pathSection">
+    <section class="homePaths" aria-labelledby="pathsTitle">
       <div class="sectionTitle">
         <span>Caminhos da Forja</span>
-        <h2>Escolha por onde sua criação começa.</h2>
+        <h2 id="pathsTitle">Escolha por onde sua criação começa.</h2>
       </div>
 
-      <div class="pathCards">
-        <a class="pathCard" href="pacotes.html">
-          <span>01</span>
-          <h3>Pacotes</h3>
-          <p>Veja os serviços principais e os ranks do Memorial com preços visíveis.</p>
+      <div class="homePathGrid">
+        <a class="homePath pathPackages" href="pacotes.html">
+          <span>Pacotes</span>
+          <h3>Serviços principais e ranks do Memorial</h3>
+          <p>Veja preços, entregas e escolha o tipo de criação que combina com sua ideia.</p>
         </a>
 
-        <a class="pathCard" href="pedidos.html">
-          <span>02</span>
-          <h3>Pedidos</h3>
-          <p>Entenda como enviar sua ideia e quais informações ajudam na criação.</p>
+        <a class="homePath pathOrders" href="pedidos.html">
+          <span>Pedidos</span>
+          <h3>Como encomendar uma criação</h3>
+          <p>Entenda o fluxo, as informações necessárias e como a conversa direta funciona.</p>
         </a>
 
-        <a class="pathCard" href="memorial.html">
-          <span>03</span>
-          <h3>Memorial</h3>
-          <p>Conheça a terra de memórias onde personagens viram legado.</p>
+        <a class="homePath pathMemorial" href="memorial.html">
+          <span>Memorial</span>
+          <h3>Personagens que viram lembrança viva</h3>
+          <p>Conheça a terra de memórias da Forja: Chama, Estátua, Santuário e Legado.</p>
         </a>
       </div>
     </section>
 
-    <section class="contact" id="contato">
+    <section class="homePromise" aria-labelledby="promiseTitle">
+      <div class="promiseVisual" aria-hidden="true">
+        <div class="promiseFlame"></div>
+        <div class="promiseLines"></div>
+      </div>
+
+      <div class="promiseText">
+        <span class="tag">Para criadores intensos</span>
+        <h2 id="promiseTitle">A sua ideia tem valor antes mesmo de estar perfeita.</h2>
+        <p>
+          Muita gente para de criar porque acha que a ideia está fraca, confusa ou incompleta.
+          A Forja existe para fazer o caminho contrário: proteger a faísca, organizar o caos e
+          lembrar que criatividade também precisa de cuidado.
+        </p>
+
+        <div class="promiseButtons">
+          <a href="cliente.html" class="btn primary">Começar um pedido</a>
+          <a href="creditos.html" class="btn secondary">Conhecer os criadores</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact homeContact" id="contato">
       <h2>Contato</h2>
       <p>Também dá para falar direto pelo e-mail oficial da Forja:</p>
       <a href="mailto:forjanarrativa5790@gmail.com">forjanarrativa5790@gmail.com</a>

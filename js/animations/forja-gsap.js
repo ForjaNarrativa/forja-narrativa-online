@@ -9,11 +9,11 @@ function animateForjaPage(event) {
   if (firstRun) {
     window.__forjaIntroAnimated = true;
     gsap.from(".topbar", { y: -24, opacity: 0, duration: 0.7, ease: "power2.out" });
-    gsap.from(".heroText, .pageHero, .clientHero, .ordersClientHero", { y: 24, opacity: 0, duration: 0.8, ease: "power2.out", stagger: 0.08 });
-    gsap.from(".forgeCard, .clientPanel, .creditsStage", { scale: 0.98, opacity: 0, duration: 0.75, ease: "power2.out", delay: 0.12 });
+    gsap.from(".heroText, .homeHeroText, .pageHero, .packagesHeroText, .ordersHeroText, .clientHero, .ordersClientHero", { y: 24, opacity: 0, duration: 0.8, ease: "power2.out", stagger: 0.08 });
+    gsap.from(".forgeCard, .homeForgeRelic, .packageCompass, .ordersContract, .portalContent, .clientPanel, .creditsStage", { scale: 0.98, opacity: 0, duration: 0.75, ease: "power2.out", delay: 0.12 });
   }
 
-  const cards = gsap.utils.toArray("[data-gsap-card], .pathCard, .lorePanel, .stepCard, .infoListGrid div");
+  const cards = gsap.utils.toArray("[data-gsap-card], .pathCard, .homePath, .flowStep, .lorePanel, .stepCard, .orderStep, .sparkCard, .infoListGrid div, .packageCompareBox");
   cards.forEach((card, index) => {
     if (card.dataset.forjaAnimated === "true") return;
     card.dataset.forjaAnimated = "true";

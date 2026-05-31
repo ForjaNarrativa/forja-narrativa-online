@@ -1,9 +1,370 @@
-.orderInfoSection .infoListGrid div {
-  min-height: 72px;
+.pedidosPage main {
+  overflow: hidden;
+}
+
+.pedidosPage main::before,
+.pedidosPage main::after {
+  content: "";
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.72;
+}
+
+.pedidosPage main::before {
+  width: 44vw;
+  height: 44vw;
+  left: -18vw;
+  top: 14vh;
+  background: radial-gradient(circle, rgba(226, 184, 90, 0.18), transparent 66%);
+  filter: blur(6px);
+}
+
+.pedidosPage main::after {
+  width: 42vw;
+  height: 42vw;
+  right: -16vw;
+  top: 42vh;
+  background: radial-gradient(circle, rgba(158, 100, 216, 0.16), transparent 68%);
+  filter: blur(8px);
+}
+
+.ordersHero,
+.ordersPathSection,
+.sparkSection,
+.orderInfoSection,
+.orderPortal {
+  position: relative;
+  z-index: 2;
+}
+
+.ordersHero {
+  min-height: 82vh;
+  padding: 92px 6vw 64px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.72fr);
+  gap: clamp(32px, 6vw, 80px);
+  align-items: center;
+}
+
+.ordersHeroGlow {
+  position: absolute;
+  inset: 8% 2% auto auto;
+  width: 460px;
+  height: 460px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(226, 184, 90, 0.2), transparent 54%),
+    conic-gradient(from 120deg, transparent, rgba(158, 100, 216, 0.16), transparent, rgba(226, 184, 90, 0.14), transparent);
+  filter: blur(10px);
+  opacity: 0.82;
+  animation: ordersPulse 7s ease-in-out infinite;
+}
+
+.ordersHeroText h2 {
+  margin: 22px 0;
+  max-width: 960px;
+  font-size: clamp(3rem, 7vw, 6.6rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+  letter-spacing: -0.055em;
+  text-shadow:
+    0 0 34px rgba(226, 184, 90, 0.16),
+    0 0 42px rgba(158, 100, 216, 0.12);
+}
+
+.ordersHeroText p {
+  max-width: 760px;
+  color: var(--muted);
+  font-size: 1.08rem;
+  line-height: 1.85;
+}
+
+.ordersHeroActions {
+  align-items: center;
+}
+
+.ghostBtn {
+  color: var(--muted);
+  border-color: rgba(158, 100, 216, 0.28);
+  background: rgba(158, 100, 216, 0.08);
+}
+
+.ghostBtn:hover {
+  color: var(--gold);
+  border-color: rgba(226, 184, 90, 0.42);
+}
+
+.ordersContract {
+  position: relative;
+  min-height: 440px;
+  padding: 34px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  border: 1px solid rgba(226, 184, 90, 0.24);
+  border-radius: 34px;
+  background:
+    linear-gradient(135deg, rgba(226, 184, 90, 0.1), transparent 35%),
+    radial-gradient(circle at 70% 18%, rgba(158, 100, 216, 0.18), transparent 38%),
+    rgba(6, 4, 10, 0.72);
+  box-shadow:
+    0 28px 80px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.035),
+    inset 0 0 60px rgba(226, 184, 90, 0.045);
+  backdrop-filter: blur(12px);
+}
+
+.ordersContract::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background:
+    linear-gradient(90deg, transparent, rgba(226, 184, 90, 0.18), transparent),
+    repeating-linear-gradient(115deg, transparent 0 18px, rgba(226, 184, 90, 0.035) 18px 19px);
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.2), #000 40%, rgba(0,0,0,0.72));
+  pointer-events: none;
+}
+
+.ordersContract::after {
+  content: "Pedido registrado\\A Ideia protegida\\A Criação em forja";
+  white-space: pre;
+  position: absolute;
+  top: 32px;
+  left: 34px;
+  color: rgba(226, 184, 90, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  line-height: 2.2;
+  font-size: 0.72rem;
+}
+
+.contractSeal {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  width: 78px;
+  height: 78px;
+  border: 1px solid rgba(226, 184, 90, 0.55);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--gold);
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  background: rgba(0, 0, 0, 0.26);
+  box-shadow:
+    0 0 24px rgba(226, 184, 90, 0.18),
+    inset 0 0 24px rgba(226, 184, 90, 0.08);
+}
+
+.ordersContract > span,
+.ordersContract h3,
+.ordersContract p,
+.contractLines {
+  position: relative;
+  z-index: 1;
+}
+
+.ordersContract > span {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.76rem;
+}
+
+.ordersContract h3 {
+  margin: 14px 0 12px;
+  font-size: clamp(1.85rem, 3vw, 3.1rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.ordersContract p {
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.contractLines {
+  display: grid;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.contractLines i {
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(226, 184, 90, 0.7), transparent);
+}
+
+.contractLines i:nth-child(2) { width: 82%; }
+.contractLines i:nth-child(3) { width: 64%; }
+.contractLines i:nth-child(4) { width: 48%; }
+
+.ordersPathSection,
+.sparkSection,
+.orderInfoSection,
+.orderPortal {
+  padding: 72px 6vw;
+}
+
+.ordersSectionTitle p {
+  max-width: 760px;
+}
+
+.ordersPath {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 36px;
+}
+
+.ordersPath::before {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 46px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(226, 184, 90, 0.5), rgba(158, 100, 216, 0.34), transparent);
+  z-index: -1;
+}
+
+.orderStep {
+  position: relative;
+  min-height: 250px;
+  padding: 26px;
+  overflow: hidden;
+  border: 1px solid rgba(226, 184, 90, 0.2);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 22% 10%, rgba(226, 184, 90, 0.12), transparent 34%),
+    rgba(8, 6, 12, 0.72);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.34);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.orderStep:hover,
+.sparkCard:hover {
+  transform: translateY(-7px);
+  border-color: rgba(226, 184, 90, 0.45);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.44), 0 0 36px rgba(226, 184, 90, 0.08);
+}
+
+.orderStep::after,
+.sparkCard::after {
+  content: "";
+  position: absolute;
+  inset: auto -30% -40% -30%;
+  height: 110px;
+  background: radial-gradient(circle, rgba(158, 100, 216, 0.18), transparent 64%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.orderStep:hover::after,
+.sparkCard:hover::after {
+  opacity: 1;
+}
+
+.orderStep span {
+  display: inline-grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border: 1px solid rgba(226, 184, 90, 0.46);
+  border-radius: 50%;
+  color: var(--gold);
+  background: rgba(0, 0, 0, 0.32);
+  box-shadow: inset 0 0 18px rgba(226, 184, 90, 0.08);
+  font-weight: 900;
+}
+
+.orderStep h3 {
+  margin: 28px 0 12px;
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.orderStep p,
+.sparkCard p {
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.sparkSection {
+  display: grid;
+  grid-template-columns: minmax(0, 0.74fr) minmax(0, 1.26fr);
+  gap: clamp(28px, 5vw, 70px);
+  align-items: center;
+}
+
+.sparkText h2 {
+  margin: 18px 0;
+  font-size: clamp(2.4rem, 5vw, 4.8rem);
+  line-height: 0.96;
+  text-transform: uppercase;
+}
+
+.sparkText p {
+  color: var(--muted);
+  line-height: 1.85;
+}
+
+.sparkGrid {
+  display: grid;
+  gap: 18px;
+}
+
+.sparkCard {
+  position: relative;
+  overflow: hidden;
+  padding: 28px;
+  border: 1px solid rgba(158, 100, 216, 0.22);
+  border-radius: 28px;
+  background:
+    linear-gradient(90deg, rgba(226, 184, 90, 0.08), transparent 46%),
+    rgba(5, 4, 9, 0.66);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.sparkCard strong {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.76rem;
+}
+
+.sparkCard h3 {
+  margin: 12px 0 10px;
+  font-size: 1.55rem;
+}
+
+.orderChecklist div {
+  min-height: 78px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.orderChecklist div::before {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  top: 14px;
+  left: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 16px rgba(226, 184, 90, 0.55);
+  opacity: 0.78;
 }
 
 .orderInfoSection .sectionTitle p {
@@ -12,10 +373,160 @@
 
 .orderTrustNote {
   margin: 34px auto 0;
-  max-width: 920px;
-  padding: 22px;
-  border: 1px solid rgba(226, 184, 90, 0.2);
-  background: rgba(0, 0, 0, 0.28);
+  max-width: 980px;
+  padding: 24px 26px;
+  border: 1px solid rgba(226, 184, 90, 0.24);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 8% 50%, rgba(226, 184, 90, 0.1), transparent 36%),
+    rgba(0, 0, 0, 0.32);
   color: var(--muted);
   line-height: 1.8;
+}
+
+.orderPortal {
+  padding-bottom: 110px;
+}
+
+.orderPortal {
+  min-height: 420px;
+  display: grid;
+  place-items: center;
+}
+
+.portalContent {
+  position: relative;
+  z-index: 1;
+  width: min(960px, 100%);
+  padding: clamp(32px, 5vw, 58px);
+  text-align: center;
+  border: 1px solid rgba(226, 184, 90, 0.26);
+  border-radius: 38px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(226, 184, 90, 0.18), transparent 46%),
+    linear-gradient(135deg, rgba(158, 100, 216, 0.12), transparent 50%),
+    rgba(5, 4, 9, 0.78);
+  box-shadow:
+    0 28px 86px rgba(0, 0, 0, 0.52),
+    inset 0 0 0 1px rgba(255,255,255,0.035);
+  backdrop-filter: blur(12px);
+}
+
+.portalContent h2 {
+  margin: 18px 0;
+  font-size: clamp(2.4rem, 5.5vw, 5rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.portalContent p {
+  max-width: 760px;
+  margin: 0 auto;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.portalActions {
+  justify-content: center;
+}
+
+.portalRings {
+  position: absolute;
+  width: min(74vw, 760px);
+  height: min(74vw, 760px);
+  border-radius: 50%;
+  background:
+    repeating-radial-gradient(circle, rgba(226, 184, 90, 0.18) 0 1px, transparent 1px 42px),
+    conic-gradient(from 0deg, transparent, rgba(226, 184, 90, 0.2), transparent, rgba(158, 100, 216, 0.2), transparent);
+  filter: blur(0.2px);
+  opacity: 0.36;
+  animation: ordersSpin 28s linear infinite;
+}
+
+@keyframes ordersSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ordersPulse {
+  0%, 100% { transform: scale(0.96); opacity: 0.62; }
+  50% { transform: scale(1.04); opacity: 0.9; }
+}
+
+@media (max-width: 980px) {
+  .ordersHero,
+  .sparkSection {
+    grid-template-columns: 1fr;
+  }
+
+  .ordersHero {
+    padding-top: 72px;
+    min-height: auto;
+  }
+
+  .ordersContract {
+    min-height: 340px;
+  }
+
+  .ordersPath {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ordersPath::before {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .ordersHero,
+  .ordersPathSection,
+  .sparkSection,
+  .orderInfoSection,
+  .orderPortal {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .ordersHeroText h2,
+  .sparkText h2,
+  .portalContent h2 {
+    letter-spacing: -0.04em;
+  }
+
+  .ordersHeroActions,
+  .portalActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ordersHeroActions .btn,
+  .portalActions .btn {
+    text-align: center;
+  }
+
+  .ordersPath {
+    grid-template-columns: 1fr;
+  }
+
+  .ordersContract {
+    min-height: 310px;
+    padding: 26px;
+    border-radius: 28px;
+  }
+
+  .contractSeal {
+    width: 60px;
+    height: 60px;
+    font-size: 1rem;
+  }
+
+  .orderStep,
+  .sparkCard,
+  .portalContent {
+    border-radius: 24px;
+  }
+
+  .portalRings {
+    width: 108vw;
+    height: 108vw;
+  }
 }
