@@ -14,10 +14,11 @@
 <body>
   <div class="noise"></div>
   <div class="embers" id="embers"></div>
+  <canvas class="forgeCanvas" id="forgeCanvas" aria-hidden="true"></canvas>
 
   <header class="topbar">
     <div class="brand">
-      <div class="logo">F</div>
+      <div class="logo"><img class="logoSvg" src="assets/svg/logo-forja.svg" alt="Símbolo da Forja Narrativa" /></div>
       <div>
         <h1>Fazer Pedido</h1>
         <p>Envie sua ideia para a Forja</p>
@@ -50,12 +51,12 @@
 
         <label>
           Tipo de pedido
-          <select id="packageName" required>
+          <select id="packageName" data-package-options="all" required>
             <option value="">Selecione um pacote</option>
-            <option value="Ficha Essência - Promoção R$20">Ficha Essência — Promoção R$20</option>
-            <option value="Personagem Vivo - R$90">Personagem Vivo — R$90</option>
-            <option value="Arquivo Secreto - R$150">Arquivo Secreto — R$150</option>
-            <option value="Memorial Digital - R$250">Memorial Digital — R$250</option>
+            <option value="Ficha Essência - R$40">Ficha Essência — R$40</option>
+            <option value="Personagem Vivo - R$70">Personagem Vivo — R$70</option>
+            <option value="Arquivo Secreto - R$90">Arquivo Secreto — R$90</option>
+            <option value="Memorial Digital - R$120">Memorial Digital — R$120</option>
           </select>
         </label>
 
@@ -80,10 +81,15 @@
 
   <footer>
     <p>Forja Narrativa © 2026 — Cada criação deixa uma marca.</p>
+    <div class="legalLinks"><a href="privacidade.html">Privacidade</a><a href="termos.html">Termos</a></div>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="js/supabase.js"></script>
   <script src="js/nav.js"></script>
+  <script src="js/data/package-options.js"></script>
   <script src="js/cliente.js"></script>
+  <script src="js/canvas/forge-particles.js"></script>
+  <script src="js/animations/forja-gsap.js"></script>
 </body>
 </html>

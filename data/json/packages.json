@@ -1,0 +1,74 @@
+[
+  {
+    "id": "ficha-essencia",
+    "category": "principal",
+    "name": "Ficha Essência",
+    "price": 40,
+    "priceLabel": "R$40",
+    "badge": "Pacote base",
+    "short": "Para tirar a personagem da cabeça e colocar no papel.",
+    "idealFor": "Quem tem uma ideia inicial e quer uma ficha narrativa organizada.",
+    "items": [
+      "Conceito base da personagem",
+      "Aparência descrita",
+      "Personalidade",
+      "História curta",
+      "Objetivo ou conflito principal",
+      "Frase marcante"
+    ]
+  },
+  {
+    "id": "personagem-vivo",
+    "category": "principal",
+    "name": "Personagem Vivo",
+    "price": 70,
+    "priceLabel": "R$70",
+    "badge": "Mais profundo",
+    "short": "Para personagem principal, OC importante ou NPC marcante.",
+    "idealFor": "Quem quer emoção, presença e identidade mais fortes.",
+    "items": [
+      "Tudo da Ficha Essência",
+      "História mais desenvolvida",
+      "Traumas, desejos ou conflitos internos",
+      "Relações importantes",
+      "Estilo de presença em cena",
+      "Resumo final pronto para usar"
+    ]
+  },
+  {
+    "id": "arquivo-secreto",
+    "category": "principal",
+    "name": "Arquivo Secreto",
+    "price": 90,
+    "priceLabel": "R$90",
+    "badge": "Dossiê imersivo",
+    "short": "Para quem quer um documento com clima investigativo e especial.",
+    "idealFor": "Vilões, agentes, criaturas, personagens misteriosos e campanhas de investigação.",
+    "items": [
+      "Ficha narrativa da personagem",
+      "Dossiê em estilo investigativo",
+      "Avaliação dentro do universo",
+      "Comportamento, riscos e potencial",
+      "Importância narrativa do alvo",
+      "Ideal para arquivos confidenciais"
+    ]
+  },
+  {
+    "id": "memorial-digital",
+    "category": "principal",
+    "name": "Memorial Digital",
+    "price": 120,
+    "priceLabel": "R$120",
+    "badge": "Pacote máximo",
+    "short": "Para homenagem, despedida ou encerramento de arco.",
+    "idealFor": "Personagens que morreram, foram aposentados ou marcaram uma campanha.",
+    "items": [
+      "Texto memorial da personagem",
+      "História resumida com tom marcante",
+      "Frase de legado",
+      "Momentos importantes",
+      "Significado emocional da criação",
+      "Formato pronto para homenagem"
+    ]
+  }
+]

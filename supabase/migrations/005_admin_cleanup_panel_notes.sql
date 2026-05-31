@@ -1,0 +1,12 @@
+-- Forja Narrativa Online — painel de limpeza da Sala do Criador
+-- Versão 0.3.4
+-- Esta atualização usa as mesmas permissões já criadas nas migrations anteriores:
+-- - UPDATE em public.orders para administradores, usado para arquivar/restaurar pedidos.
+-- - DELETE em public.orders para administradores, usado para excluir pedidos teste em massa.
+--
+-- Se a migration 004_admin_delete_orders.sql já foi aplicada com sucesso,
+-- não é necessário rodar SQL novo para esta versão.
+--
+-- Status usados pelo painel:
+-- arquivado
+-- teste

@@ -1,0 +1,130 @@
+# Arquitetura — Forja Narrativa Online
+
+Versão interna: **0.3 — limpeza, segurança e preparação para crescimento**.
+
+## Páginas públicas
+
+- `index.html` — início e apresentação da Forja.
+- `pacotes.html` — pacotes principais e ranks do Memorial via JSON.
+- `memorial.html` — conceito visual do Memorial da Forja via JSON.
+- `creditos.html` — créditos Jhonata/Lumi com chibis interativos.
+- `pedidos.html` — página explicando como fazer pedidos.
+- `privacidade.html` — política simples de privacidade.
+- `termos.html` — termos simples de uso.
+
+## Páginas internas
+
+- `auth.html` — login/cadastro do cliente, com recuperação de senha.
+- `cliente.html` — formulário de novo pedido logado.
+- `meus-pedidos.html` — acompanhamento de pedidos do cliente.
+- `login.html` — entrada reservada do admin.
+- `admin.html` — painel da Forja.
+
+## Dados
+
+- `data/json/packages.json` — pacotes principais.
+- `data/json/memorial-ranks.json` — ranks do Memorial.
+- `data/json/site-pages.json` — navegação pública.
+- `data/json/internal-pages.json` — páginas internas/legais documentadas.
+
+## Camadas adicionadas
+
+- **JSON:** dados de pacotes, memorial, créditos e páginas.
+- **SVG:** logo, fenda e ornamentos.
+- **CSS avançado:** visual global, responsividade e estados.
+- **GSAP:** animações com trava para não repetir em excesso.
+- **Canvas:** partículas da Forja com modo leve automático para mobile.
+- **Markdown:** pasta de textos e loader simples em `js/markdown/render-markdown.js`.
+- **TypeScript:** tipos base corrigidos em `ts/src/types.ts`.
+
+## Supabase
+
+A pasta `supabase/migrations/` documenta o banco esperado:
+
+- `001_schema_base.sql` — tabelas `profiles`, `admin_users`, `orders`, `order_messages`, `order_deliveries`.
+- `002_policies.sql` — RLS e policies para cliente/admin.
+- `003_seed_admin_example.sql` — exemplo para registrar admin.
+
+Antes de divulgar para clientes reais, revise as policies no painel do Supabase.
+
+## Correções aplicadas na versão 0.3
+
+- Corrigido TypeScript: `SitePage` agora existe.
+- Removido arquivo antigo `js/pedidos.js` que estava órfão.
+- `pedidos.html` agora usa `css/pedidos.css` próprio.
+- Menu esconde também links internos quando o usuário está na página atual.
+- Adicionada recuperação de senha em `auth.html`.
+- Adicionadas páginas `privacidade.html` e `termos.html`.
+- Criadas migrations SQL oficiais para reconstruir banco/policies.
+- Admin recebeu status extras: aguardando resposta, revisão, cancelado, arquivado e teste.
+- JSON com mensagens de erro visíveis quando falha ao carregar.
+- Canvas foi aliviado para mobile.
+- GSAP não anima tudo repetidamente depois de conteúdo dinâmico.
+- `Meus Pedidos` recebeu espaços preparados para mensagens e entrega final.
+
+
+## Atualização 0.3.1 — Conta criadora e saída
+
+- A navegação agora mostra **Sair da conta** quando existe sessão ativa.
+- A conta `forjanarrativa5790@gmail.com` é reconhecida como criadora/admin no menu e no painel.
+- O link **Sala do Criador** aparece automaticamente para essa conta, mesmo sem depender de cadastro manual em `admin_users`.
+- A função SQL `public.is_forja_admin()` também reconhece esse e-mail para liberar leitura/atualização administrativa nas policies do Supabase.
+- Outros administradores ainda podem ser adicionados pela tabela `admin_users`.
+
+## Versão 0.3.2 — Correção do menu de conta
+
+Correções aplicadas:
+
+- `js/supabase.js` agora também expõe o cliente como `window.forjaDB`.
+- `js/nav.js` agora usa `window.forjaDB` com fallback para `forjaDB` global.
+- O menu agora re-renderiza quando o estado de autenticação muda.
+- A opção `Sair da conta` aparece quando há sessão ativa.
+- A opção `Sala do Criador` aparece quando a sessão ativa pertence ao e-mail oficial `forjanarrativa5790@gmail.com` ou a um usuário existente em `admin_users`.
+
+Motivo da correção:
+
+- O cliente Supabase existia como `const forjaDB`, mas `nav.js` procurava por `window.forjaDB`. Como `const` global não cria uma propriedade automática em `window`, o menu achava que não havia Supabase e sempre montava a navegação como visitante.
+
+## Versão 0.3.3 — Exclusão de pedidos na Sala do Criador
+
+Mudanças:
+
+- A Sala do Criador agora possui uma zona de limpeza em cada pedido.
+- Administradores podem excluir pedidos permanentemente pelo painel.
+- A exclusão pede duas confirmações: confirmação comum e digitar `EXCLUIR`.
+- A ação deve ser usada para pedidos de teste, spam ou registros que não devem permanecer no banco.
+- Nova migration: `supabase/migrations/004_admin_delete_orders.sql`.
+
+Supabase:
+
+- Rode a migration 004 no SQL Editor para liberar `DELETE` em `orders` apenas para administradores.
+- Como `order_messages` e `order_deliveries` têm `on delete cascade`, dados internos ligados ao pedido também são apagados.
+
+
+## Versão 0.3.4 — Painel de limpeza da Sala do Criador
+
+Adições:
+
+- Filtro por status no painel admin.
+- Botões rápidos para ver pedidos com status `teste` e `arquivado`.
+- Botão para limpar filtros do painel.
+- Ação individual para arquivar/restaurar pedidos sem excluir.
+- Ação em massa para excluir todos os pedidos com status `teste`.
+- Confirmação dupla para limpeza em massa: o admin precisa digitar `LIMPAR TESTES`.
+
+Observação Supabase:
+
+- Esta versão não exige SQL novo se as policies de `UPDATE` e `DELETE` para admin já estiverem funcionando.
+- A migration `005_admin_cleanup_panel_notes.sql` existe apenas como documentação do recurso.
+
+## Versão 0.3.5 — Remake visual da Sala de Créditos
+
+Mudanças:
+
+- A página `creditos.html` agora tem uma introdução própria: **Sala dos Criadores**.
+- A seção de créditos foi refeita para parecer uma cena única, não dois cards separados.
+- Jhonata e Lumi ficam em lados opostos da mesma sala, com a fenda no centro.
+- A fenda central recebeu brilho mais controlado, melhor alinhamento e melhor responsividade.
+- Os chibis ficaram maiores e com melhor destaque visual.
+- A versão mobile agora organiza a sala em sequência vertical: Jhonata → fenda → Lumi.
+- Mantida a troca de sprite por hover no PC e toque no celular.

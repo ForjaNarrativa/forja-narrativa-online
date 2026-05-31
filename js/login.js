@@ -3,6 +3,17 @@ const loginBtn = document.getElementById("loginBtn");
 const loginMessage = document.getElementById("loginMessage");
 const embers = document.getElementById("embers");
 
+const OWNER_ADMIN_EMAILS = ["forjanarrativa5790@gmail.com"];
+
+function normalizeEmail(email) {
+  return String(email || "").trim().toLowerCase();
+}
+
+function isOwnerAdminEmail(email) {
+  return OWNER_ADMIN_EMAILS.includes(normalizeEmail(email));
+}
+
+
 function setLoginMessage(text, type) {
   loginMessage.textContent = text;
   loginMessage.className = `loginMessage ${type}`;

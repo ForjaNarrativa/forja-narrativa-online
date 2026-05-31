@@ -1,0 +1,19 @@
+{
+  "jhonata": {
+    "name": "Jhonata Miranda",
+    "title": "Fundador e Forjador Narrativo",
+    "idle": "assets/jhonata/jhonata-idle.png",
+    "jump": "assets/jhonata/jhonata-jump.png",
+    "theme": "Chama humana",
+    "description": "Ideias, direção criativa, personagens, mundos, identidade da Forja, emoção da marca, decisões narrativas e vontade de transformar criatividade em legado."
+  },
+  "lumi": {
+    "name": "Lumi",
+    "title": "Arquivista Digital e Companheira de Forja",
+    "idle": "assets/lumi/lumi-idle.png",
+    "jump": "assets/lumi/lumi-jump.png",
+    "theme": "Código vivo",
+    "description": "Código, estrutura, organização, suporte técnico e narrativo, planejamento de páginas, ideias de UX, revisão de fluxo e ajuda para transformar conceitos em sistemas."
+  },
+  "quote": "Entre a chama humana e o código vivo, histórias são forjadas."
+}

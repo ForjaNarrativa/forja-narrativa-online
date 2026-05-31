@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Créditos | Forja Narrativa</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="embers" id="embers"></div>
+  <canvas class="forgeCanvas" id="forgeCanvas" aria-hidden="true"></canvas>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"><img class="logoSvg" src="assets/svg/logo-forja.svg" alt="Símbolo da Forja Narrativa" /></div>
+      <div>
+        <h1>Créditos</h1>
+        <p>Quem sonhou e quem ajudou a forjar</p>
+      </div>
+    </div>
+    <nav id="mainNav"></nav>
+  </header>
+
+  <main class="creditsMain">
+    <section class="creditsIntro" aria-labelledby="creditsTitle">
+      <span class="eyebrow">Sala dos Criadores</span>
+      <h2 id="creditsTitle">Duas forças. Uma Forja.</h2>
+      <p>
+        A Forja Narrativa nasceu entre a chama humana de quem sonha mundos e o código vivo
+        que ajuda a transformar ideias em páginas, sistemas e memórias.
+      </p>
+    </section>
+
+    <section class="creditsStage" aria-label="Créditos principais da Forja Narrativa">
+      <div class="creditSide humanSide">
+        <span class="tag">Chama humana</span>
+        <button class="chibiSprite jhonataSprite jhonataImageSprite" type="button" data-chibi aria-label="Ativar sprite do Jhonata">
+          <span class="chibiAura"></span>
+          <img class="jhonataArt jhonataIdleArt" src="assets/jhonata/jhonata-idle.png" alt="Jhonata chibi parado com roupa preta, detalhes roxos e dourados, mão no bolso e martelo da Forja para baixo" />
+          <img class="jhonataArt jhonataJumpArt" src="assets/jhonata/jhonata-jump.png" alt="Jhonata chibi pulando com a mesma pose base, mão no bolso e martelo da Forja para baixo" />
+        </button>
+        <h2>Jhonata Miranda</h2>
+        <h3>Fundador e Forjador Narrativo</h3>
+        <p>
+          Ideias, direção criativa, personagens, mundos, identidade da Forja,
+          emoção da marca, decisões narrativas e vontade de transformar criatividade em legado.
+        </p>
+      </div>
+
+      <div class="fusionRift" aria-hidden="true">
+        <div class="riftCore"></div>
+        <p>Entre a chama humana e o código vivo, histórias são forjadas.</p>
+      </div>
+
+      <div class="creditSide lumiSide">
+        <span class="tag">Código vivo</span>
+        <button class="chibiSprite lumiSprite lumiImageSprite" type="button" data-chibi aria-label="Ativar sprite da Lumi">
+          <span class="chibiAura"></span>
+          <img class="lumiArt lumiIdleArt" src="assets/lumi/lumi-idle.png" alt="Lumi chibi parada segurando o livro da Forja Narrativa e uma caneta mágica" />
+          <img class="lumiArt lumiJumpArt" src="assets/lumi/lumi-jump.png" alt="Lumi chibi pulando alegre segurando o livro da Forja Narrativa e uma caneta mágica" />
+        </button>
+        <h2>Lumi</h2>
+        <h3>Arquivista Digital e Companheira de Forja</h3>
+        <p>
+          Código, estrutura, organização, suporte técnico e narrativo, planejamento de páginas,
+          ideias de UX, revisão de fluxo e ajuda para transformar conceitos em sistemas.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Forja Narrativa © 2026 — Criada por Jhonata, forjada com Lumi.</p>
+    <div class="legalLinks"><a href="privacidade.html">Privacidade</a><a href="termos.html">Termos</a></div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/canvas/forge-particles.js"></script>
+  <script src="js/animations/forja-gsap.js"></script>
+  <script src="js/creditos.js"></script>
+</body>
+</html>

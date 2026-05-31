@@ -14,10 +14,11 @@
 <body>
   <div class="noise"></div>
   <div class="embers" id="embers"></div>
+  <canvas class="forgeCanvas" id="forgeCanvas" aria-hidden="true"></canvas>
 
   <header class="topbar">
     <div class="brand">
-      <div class="logo">F</div>
+      <div class="logo"><img class="logoSvg" src="assets/svg/logo-forja.svg" alt="Símbolo da Forja Narrativa" /></div>
       <div>
         <h1>Painel da Forja</h1>
         <p>Pedidos recebidos no banco de dados</p>
@@ -27,7 +28,7 @@
     <nav>
       <a href="index.html">Voltar ao site</a>
       <button id="refreshBtn" class="adminNavBtn">Atualizar</button>
-      <button id="logoutBtn" class="adminNavBtn dangerBtn">Sair</button>
+      <button id="logoutBtn" class="adminNavBtn dangerBtn">Sair da conta</button>
     </nav>
   </header>
 
@@ -71,7 +72,7 @@
 
       <label>
         Filtrar pacote
-        <select id="packageFilter">
+        <select id="packageFilter" data-package-options="all" data-package-filter="true">
           <option value="">Todos os pacotes</option>
           <option value="Ficha Essência">Ficha Essência</option>
           <option value="Personagem Vivo">Personagem Vivo</option>
@@ -79,6 +80,37 @@
           <option value="Memorial Digital">Memorial Digital</option>
         </select>
       </label>
+
+      <label>
+        Filtrar status
+        <select id="statusFilter">
+          <option value="">Todos os status</option>
+          <option value="aguardando análise">Aguardando análise</option>
+          <option value="aguardando pagamento">Aguardando pagamento</option>
+          <option value="em produção">Em produção</option>
+          <option value="aguardando resposta do cliente">Aguardando resposta do cliente</option>
+          <option value="revisão solicitada">Revisão solicitada</option>
+          <option value="entregue">Entregue</option>
+          <option value="cancelado">Cancelado</option>
+          <option value="arquivado">Arquivado</option>
+          <option value="teste">Teste</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="adminCleanupPanel" aria-label="Painel de limpeza da Sala do Criador">
+      <div>
+        <span class="cleanupLabel">Limpeza rápida</span>
+        <h3>Painel de testes e arquivos</h3>
+        <p>Use essa área para separar pedidos arquivados, filtrar testes e limpar pedidos falsos sem bagunçar a Forja.</p>
+      </div>
+
+      <div class="cleanupActions">
+        <button type="button" id="showTestOrdersBtn">Ver pedidos teste</button>
+        <button type="button" id="showArchivedOrdersBtn">Ver arquivados</button>
+        <button type="button" id="clearFiltersBtn">Limpar filtros</button>
+        <button type="button" id="deleteTestOrdersBtn" class="dangerBtn">Excluir todos os testes</button>
+      </div>
     </section>
 
     <section class="ordersArea">
@@ -94,7 +126,11 @@
     <p>Forja Narrativa © 2026 — Painel interno.</p>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="js/supabase.js"></script>
+  <script src="js/data/package-options.js"></script>
   <script src="js/admin.js"></script>
+  <script src="js/canvas/forge-particles.js"></script>
+  <script src="js/animations/forja-gsap.js"></script>
 </body>
 </html>

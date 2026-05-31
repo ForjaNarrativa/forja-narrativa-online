@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Meus Pedidos | Forja Narrativa</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/meus-pedidos.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="embers" id="embers"></div>
+  <canvas class="forgeCanvas" id="forgeCanvas" aria-hidden="true"></canvas>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"><img class="logoSvg" src="assets/svg/logo-forja.svg" alt="Símbolo da Forja Narrativa" /></div>
+      <div>
+        <h1>Meus Pedidos</h1>
+        <p>Acompanhe suas criações</p>
+      </div>
+    </div>
+
+    <nav id="mainNav"></nav>
+  </header>
+
+  <main class="ordersClientMain">
+    <section class="ordersClientHero">
+      <span class="tag">Área do cliente</span>
+
+      <h2>
+        Suas criações
+        <strong>em andamento.</strong>
+      </h2>
+
+      <p>
+        Aqui ficam todos os pedidos enviados pela sua conta.
+      </p>
+    </section>
+
+    <section class="ordersClientArea">
+      <div id="clientOrdersLoading" class="clientOrdersLoading">
+        Carregando seus pedidos...
+      </div>
+
+      <div id="clientOrdersList" class="clientOrdersList"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Forja Narrativa © 2026 — Cada criação deixa uma marca.</p>
+    <div class="legalLinks"><a href="privacidade.html">Privacidade</a><a href="termos.html">Termos</a></div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/meus-pedidos.js"></script>
+  <script src="js/canvas/forge-particles.js"></script>
+  <script src="js/animations/forja-gsap.js"></script>
+</body>
+</html>

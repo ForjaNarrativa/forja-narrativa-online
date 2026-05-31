@@ -85,7 +85,7 @@
 .adminTools {
   padding: 0 6vw 30px;
   display: grid;
-  grid-template-columns: 1fr 280px;
+  grid-template-columns: minmax(220px, 1fr) 280px 280px;
   gap: 18px;
 }
 
@@ -282,5 +282,166 @@
 
   .orderBadges {
     justify-content: flex-start;
+  }
+}
+.orderDangerZone {
+  position: relative;
+  z-index: 1;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid rgba(255, 107, 94, 0.28);
+  background:
+    linear-gradient(135deg, rgba(255, 107, 94, 0.08), transparent 45%),
+    rgba(0, 0, 0, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.orderDangerZone strong {
+  display: block;
+  color: var(--danger);
+  margin-bottom: 4px;
+}
+
+.orderDangerZone span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.deleteOrderBtn {
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 107, 94, 0.6);
+  background: rgba(255, 107, 94, 0.08);
+  color: var(--danger);
+  padding: 10px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  transition: 0.2s ease;
+}
+
+.deleteOrderBtn:hover {
+  background: var(--danger);
+  color: #160e07;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 720px) {
+  .orderDangerZone {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .deleteOrderBtn {
+    width: 100%;
+  }
+}
+
+.adminCleanupPanel {
+  margin: 0 6vw 30px;
+  padding: 22px;
+  border: 1px solid rgba(226, 184, 90, 0.28);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(226, 184, 90, 0.12), transparent 28%),
+    radial-gradient(circle at 100% 100%, rgba(158, 100, 216, 0.16), transparent 32%),
+    rgba(0, 0, 0, 0.28);
+  box-shadow:
+    0 0 35px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 1px rgba(158, 100, 216, 0.08);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  align-items: center;
+}
+
+.cleanupLabel {
+  display: inline-block;
+  color: var(--gold);
+  border: 1px solid rgba(226, 184, 90, 0.35);
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.adminCleanupPanel h3 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 1.35rem;
+}
+
+.adminCleanupPanel p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.cleanupActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cleanupActions button,
+.archiveOrderBtn {
+  border: 1px solid rgba(226, 184, 90, 0.45);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--gold);
+  padding: 10px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  transition: 0.2s ease;
+}
+
+.cleanupActions button:hover,
+.archiveOrderBtn:hover {
+  background: var(--gold);
+  color: #160e07;
+  transform: translateY(-2px);
+}
+
+.cleanupActions .dangerBtn:disabled {
+  cursor: wait;
+  opacity: 0.7;
+  transform: none;
+}
+
+.orderDangerZone {
+  flex-wrap: wrap;
+}
+
+.orderDangerZone > div:first-child {
+  min-width: min(100%, 280px);
+  flex: 1 1 auto;
+}
+
+.orderDangerZone .archiveOrderBtn,
+.orderDangerZone .deleteOrderBtn {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 920px) {
+  .adminCleanupPanel {
+    grid-template-columns: 1fr;
+  }
+
+  .cleanupActions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 720px) {
+  .cleanupActions,
+  .cleanupActions button,
+  .archiveOrderBtn {
+    width: 100%;
   }
 }

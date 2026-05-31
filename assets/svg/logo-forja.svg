@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Símbolo da Forja Narrativa">
+  <defs><radialGradient id="g" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#f5d27c"/><stop offset=".55" stop-color="#e2b85a"/><stop offset="1" stop-color="#5b2d85"/></radialGradient></defs>
+  <circle cx="64" cy="64" r="58" fill="#050409" stroke="#e2b85a" stroke-width="4"/>
+  <path d="M34 92h60M44 80h40M50 72h28l14-28H36l14 28Z" fill="url(#g)" stroke="#e2b85a" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M42 28l13 16M86 26L73 44M64 18v22" stroke="#9e64d8" stroke-width="4" stroke-linecap="round"/>
+  <path d="M54 52l7 8-5 8 10-8-5-8 12 5" fill="none" stroke="#9e64d8" stroke-width="2" stroke-linecap="round"/>
+</svg>

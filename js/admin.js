@@ -4,6 +4,11 @@ const refreshBtn = document.getElementById("refreshBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const searchInput = document.getElementById("searchInput");
 const packageFilter = document.getElementById("packageFilter");
+const statusFilter = document.getElementById("statusFilter");
+const showTestOrdersBtn = document.getElementById("showTestOrdersBtn");
+const showArchivedOrdersBtn = document.getElementById("showArchivedOrdersBtn");
+const clearFiltersBtn = document.getElementById("clearFiltersBtn");
+const deleteTestOrdersBtn = document.getElementById("deleteTestOrdersBtn");
 
 const totalOrders = document.getElementById("totalOrders");
 const waitingOrders = document.getElementById("waitingOrders");
@@ -13,6 +18,17 @@ const embers = document.getElementById("embers");
 
 let ordersCache = [];
 let currentUser = null;
+
+const OWNER_ADMIN_EMAILS = ["forjanarrativa5790@gmail.com"];
+
+function normalizeEmail(email) {
+  return String(email || "").trim().toLowerCase();
+}
+
+function isOwnerAdminEmail(email) {
+  return OWNER_ADMIN_EMAILS.includes(normalizeEmail(email));
+}
+
 
 function escapeHTML(value) {
   return String(value || "")
@@ -47,11 +63,15 @@ async function requireAdminAccess() {
 
   currentUser = sessionData.session.user;
 
+  if (isOwnerAdminEmail(currentUser.email)) {
+    return true;
+  }
+
   const { data, error } = await forjaDB
     .from("admin_users")
     .select("user_id")
     .eq("user_id", currentUser.id)
-    .single();
+    .maybeSingle();
 
   if (error || !data) {
     console.error(error);
@@ -66,6 +86,18 @@ async function requireAdminAccess() {
   return true;
 }
 
+const statusPresets = [
+  { label: "Análise", status: "aguardando análise", payment: null },
+  { label: "Aguardando pagamento", status: "aguardando pagamento", payment: "não pago" },
+  { label: "Pago / Produção", status: "em produção", payment: "pago" },
+  { label: "Aguardando cliente", status: "aguardando resposta do cliente", payment: null },
+  { label: "Revisão solicitada", status: "revisão solicitada", payment: null },
+  { label: "Entregue", status: "entregue", payment: "pago" },
+  { label: "Cancelado", status: "cancelado", payment: null },
+  { label: "Arquivado", status: "arquivado", payment: null },
+  { label: "Teste", status: "teste", payment: "isento" }
+];
+
 function updateStats(orders) {
   totalOrders.textContent = orders.length;
 
@@ -78,9 +110,31 @@ function updateStats(orders) {
   }).length;
 }
 
+function renderStatusButtons(order) {
+  return statusPresets.map((preset) => {
+    const payment = preset.payment || order.payment_status || "não pago";
+    return `<button onclick="updateOrderStatus('${order.id}', '${preset.status}', '${payment}')">${preset.label}</button>`;
+  }).join("");
+}
+
+function renderDangerActions(order) {
+  const isArchived = String(order.status || "").toLowerCase() === "arquivado";
+  const archiveButton = isArchived
+    ? `<button class="archiveOrderBtn" onclick="updateOrderStatus('${order.id}', 'aguardando análise', '${order.payment_status || "não pago"}')" title="Tirar pedido do arquivo">Restaurar</button>`
+    : `<button class="archiveOrderBtn" onclick="archiveOrder('${order.id}')" title="Arquivar pedido sem excluir">Arquivar</button>`;
+
+  return `
+    ${archiveButton}
+    <button class="deleteOrderBtn" onclick="deleteOrder('${order.id}')" title="Excluir pedido permanentemente">
+      Excluir pedido
+    </button>
+  `;
+}
+
 function renderOrders() {
   const searchTerm = searchInput.value.trim().toLowerCase();
   const packageTerm = packageFilter.value.trim().toLowerCase();
+  const statusTerm = statusFilter.value.trim().toLowerCase();
 
   let filtered = [...ordersCache];
 
@@ -102,6 +156,12 @@ function renderOrders() {
   if (packageTerm) {
     filtered = filtered.filter((order) => {
       return String(order.package_name || "").toLowerCase().includes(packageTerm);
+    });
+  }
+
+  if (statusTerm) {
+    filtered = filtered.filter((order) => {
+      return String(order.status || "").toLowerCase() === statusTerm;
     });
   }
 
@@ -140,21 +200,15 @@ function renderOrders() {
         </div>
 
         <div class="orderActions">
-          <button onclick="updateOrderStatus('${order.id}', 'aguardando análise', '${order.payment_status}')">
-            Análise
-          </button>
+          ${renderStatusButtons(order)}
+        </div>
 
-          <button onclick="updateOrderStatus('${order.id}', 'aguardando pagamento', '${order.payment_status}')">
-            Aguardando pagamento
-          </button>
-
-          <button onclick="updateOrderStatus('${order.id}', 'em produção', 'pago')">
-            Pago / Produção
-          </button>
-
-          <button onclick="updateOrderStatus('${order.id}', 'entregue', 'pago')">
-            Entregue
-          </button>
+        <div class="orderDangerZone">
+          <div>
+            <strong>Zona de limpeza</strong>
+            <span>Use para remover pedidos de teste ou spam. Essa ação é permanente.</span>
+          </div>
+          ${renderDangerActions(order)}
         </div>
       </article>
     `;
@@ -212,6 +266,133 @@ async function updateOrderStatus(orderId, newStatus, newPaymentStatus) {
   await loadOrders();
 }
 
+async function archiveOrder(orderId) {
+  const order = ordersCache.find((item) => item.id === orderId);
+
+  if (!order) {
+    alert("Pedido não encontrado na lista atual. Atualize o painel e tente de novo.");
+    return;
+  }
+
+  const confirmArchive = confirm(
+    `Arquivar o pedido de ${order.client_name || "cliente sem nome"}?\n\n` +
+    "Ele não será excluído. Você ainda poderá encontrá-lo pelo filtro Arquivado."
+  );
+
+  if (!confirmArchive) return;
+
+  await updateOrderStatus(orderId, "arquivado", order.payment_status || "não pago");
+}
+
+async function deleteOrder(orderId) {
+  const order = ordersCache.find((item) => item.id === orderId);
+
+  if (!order) {
+    alert("Pedido não encontrado na lista atual. Atualize o painel e tente de novo.");
+    return;
+  }
+
+  const clientName = order.client_name || "cliente sem nome";
+  const packageName = order.package_name || "pacote não informado";
+
+  const firstConfirm = confirm(
+    `Excluir permanentemente o pedido de ${clientName} (${packageName})?\n\n` +
+    "Use isso apenas para pedidos de teste, spam ou registros que você realmente não quer manter."
+  );
+
+  if (!firstConfirm) return;
+
+  const typed = prompt(
+    "Para confirmar a exclusão permanente, digite EXCLUIR em letras maiúsculas."
+  );
+
+  if (typed !== "EXCLUIR") {
+    alert("Exclusão cancelada.");
+    return;
+  }
+
+  const { error } = await forjaDB
+    .from("orders")
+    .delete()
+    .eq("id", orderId);
+
+  if (error) {
+    console.error(error);
+    alert("Erro ao excluir pedido. Verifique se a policy de DELETE para admin foi aplicada no Supabase.");
+    return;
+  }
+
+  ordersCache = ordersCache.filter((item) => item.id !== orderId);
+  updateStats(ordersCache);
+  renderOrders();
+
+  alert("Pedido excluído da Sala do Criador.");
+}
+
+async function deleteAllTestOrders() {
+  const testOrders = ordersCache.filter((order) => {
+    return String(order.status || "").toLowerCase() === "teste";
+  });
+
+  if (testOrders.length === 0) {
+    alert("Nenhum pedido com status Teste encontrado.");
+    return;
+  }
+
+  const firstConfirm = confirm(
+    `Excluir permanentemente ${testOrders.length} pedido(s) com status Teste?\n\n` +
+    "Use isso apenas para limpar pedidos falsos criados durante testes."
+  );
+
+  if (!firstConfirm) return;
+
+  const typed = prompt(
+    "Para confirmar a limpeza em massa, digite LIMPAR TESTES em letras maiúsculas."
+  );
+
+  if (typed !== "LIMPAR TESTES") {
+    alert("Limpeza em massa cancelada.");
+    return;
+  }
+
+  deleteTestOrdersBtn.disabled = true;
+  deleteTestOrdersBtn.textContent = "Limpando...";
+
+  const ids = testOrders.map((order) => order.id);
+
+  const { error } = await forjaDB
+    .from("orders")
+    .delete()
+    .in("id", ids);
+
+  deleteTestOrdersBtn.disabled = false;
+  deleteTestOrdersBtn.textContent = "Excluir todos os testes";
+
+  if (error) {
+    console.error(error);
+    alert("Erro ao limpar pedidos teste. Verifique se a policy de DELETE para admin está ativa.");
+    return;
+  }
+
+  ordersCache = ordersCache.filter((order) => !ids.includes(order.id));
+  updateStats(ordersCache);
+  renderOrders();
+
+  alert("Pedidos teste excluídos da Sala do Criador.");
+}
+
+function setStatusFilter(status) {
+  statusFilter.value = status;
+  renderOrders();
+}
+
+function clearAdminFilters() {
+  searchInput.value = "";
+  packageFilter.value = "";
+  statusFilter.value = "";
+  renderOrders();
+}
+
 async function logout() {
   await forjaDB.auth.signOut();
   window.location.href = "login.html";
@@ -245,6 +426,11 @@ refreshBtn.addEventListener("click", loadOrders);
 logoutBtn.addEventListener("click", logout);
 searchInput.addEventListener("input", renderOrders);
 packageFilter.addEventListener("change", renderOrders);
+statusFilter.addEventListener("change", renderOrders);
+showTestOrdersBtn.addEventListener("click", () => setStatusFilter("teste"));
+showArchivedOrdersBtn.addEventListener("click", () => setStatusFilter("arquivado"));
+clearFiltersBtn.addEventListener("click", clearAdminFilters);
+deleteTestOrdersBtn.addEventListener("click", deleteAllTestOrders);
 
 setInterval(createEmber, 300);
 

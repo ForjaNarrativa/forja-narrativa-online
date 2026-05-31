@@ -1,0 +1,70 @@
+[
+  {
+    "label": "Login do Admin",
+    "href": "login.html",
+    "match": [
+      "login.html"
+    ],
+    "area": "admin",
+    "public": false,
+    "description": "Entrada reservada para a administração da Forja."
+  },
+  {
+    "label": "Painel da Forja",
+    "href": "admin.html",
+    "match": [
+      "admin.html"
+    ],
+    "area": "admin",
+    "public": false,
+    "description": "Painel interno para visualizar e filtrar pedidos."
+  },
+  {
+    "label": "Entrar na Forja",
+    "href": "auth.html",
+    "match": [
+      "auth.html"
+    ],
+    "area": "cliente",
+    "public": false,
+    "description": "Login e criação de conta para clientes."
+  },
+  {
+    "label": "Fazer Pedido Logado",
+    "href": "cliente.html",
+    "match": [
+      "cliente.html"
+    ],
+    "area": "cliente",
+    "public": false,
+    "description": "Formulário conectado ao Supabase para pedidos logados."
+  },
+  {
+    "label": "Meus Pedidos",
+    "href": "meus-pedidos.html",
+    "match": [
+      "meus-pedidos.html"
+    ],
+    "area": "cliente",
+    "public": false,
+    "description": "Área de acompanhamento de pedidos do cliente."
+  },
+  {
+    "label": "Privacidade",
+    "href": "privacidade.html",
+    "match": [
+      "privacidade.html"
+    ],
+    "area": "legal",
+    "description": "Política simples de privacidade da Forja."
+  },
+  {
+    "label": "Termos",
+    "href": "termos.html",
+    "match": [
+      "termos.html"
+    ],
+    "area": "legal",
+    "description": "Termos simples de uso e pedidos da Forja."
+  }
+]

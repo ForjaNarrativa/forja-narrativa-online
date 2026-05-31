@@ -1,0 +1,44 @@
+[
+  {
+    "label": "Início",
+    "href": "index.html",
+    "match": [
+      "",
+      "index.html"
+    ],
+    "public": true
+  },
+  {
+    "label": "Pacotes",
+    "href": "pacotes.html",
+    "match": [
+      "pacotes.html"
+    ],
+    "public": true
+  },
+  {
+    "label": "Memorial",
+    "href": "memorial.html",
+    "match": [
+      "memorial.html"
+    ],
+    "public": true
+  },
+  {
+    "label": "Créditos",
+    "href": "creditos.html",
+    "match": [
+      "creditos.html"
+    ],
+    "public": true
+  },
+  {
+    "label": "Pedidos",
+    "href": "pedidos.html",
+    "match": [
+      "pedidos.html",
+      "cliente.html"
+    ],
+    "public": true
+  }
+]

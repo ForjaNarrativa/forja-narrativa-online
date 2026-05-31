@@ -1,0 +1,42 @@
+[
+  {
+    "id": "chama",
+    "name": "Rank Chama",
+    "price": 2,
+    "priceLabel": "R$2",
+    "region": "Campo das Chamas",
+    "limit": 30,
+    "description": "Nome da personagem e frase escolhida gravados em uma rocha memorial.",
+    "visual": "Rochas simples, terra escura, pequenas brasas douradas e nomes gravados."
+  },
+  {
+    "id": "estatua",
+    "name": "Rank Estátua",
+    "price": 10,
+    "priceLabel": "R$10",
+    "region": "Galeria dos Forjados",
+    "limit": 12,
+    "description": "Nome, frase e uma imagem/representação de estátua da personagem.",
+    "visual": "Pedestais, estátuas personalizadas e luz dourada sobre rachaduras roxas."
+  },
+  {
+    "id": "santuario",
+    "name": "Rank Santuário",
+    "price": 25,
+    "priceLabel": "R$25",
+    "region": "Santuários da Memória",
+    "limit": 6,
+    "description": "Estátua da personagem acompanhada por um cenário próprio.",
+    "visual": "Cenários pessoais em transição, como ruínas, jardins, cidades ou templos."
+  },
+  {
+    "id": "legado",
+    "name": "Rank Legado",
+    "price": 50,
+    "priceLabel": "R$50",
+    "region": "Arquivos do Legado",
+    "limit": 4,
+    "description": "Tudo dos anteriores e uma página exclusiva clicável para a personagem.",
+    "visual": "Estátua, cenário próprio e arquivo individual aberto ao clicar."
+  }
+]

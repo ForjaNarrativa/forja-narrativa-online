@@ -85,7 +85,7 @@ clientOrderForm.addEventListener("submit", async (event) => {
   clientOrderForm.reset();
 
   setTimeout(() => {
-    window.location.href = "pedidos.html";
+    window.location.href = "meus-pedidos.html";
   }, 1000);
 });
 
