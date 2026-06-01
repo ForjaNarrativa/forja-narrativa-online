@@ -346,3 +346,25 @@ O chat usa `order_messages`:
 - Mantém a URL do Discord Webhook protegida em variável de ambiente da Vercel.
 - Evita depender do `supabase link`/deploy de Edge Functions para notificações.
 - O endpoint verifica a sessão Supabase do cliente antes de mandar aviso ao Discord.
+
+## 0.5.3 — Notificações Internas
+
+- Criada migration `012_0_5_3_internal_notifications.sql` com a tabela `order_chat_reads`.
+- Chat admin agora ordena contatos pela mensagem mais recente.
+- Chat admin mostra contador circular de mensagens pendentes por contato.
+- Conversas com mensagens pendentes recebem destaque visual.
+- Ao abrir uma conversa, ela é marcada como lida para o criador.
+- Chat do cliente mostra contadores no seletor de pedidos quando a Forja responde.
+- Chat minimizado do cliente mostra bolinha de mensagens não lidas.
+- Menu principal mostra badge na aba `Chat` ou `Conversas` quando há mensagens pendentes.
+- O título da aba do navegador mostra contador quando há mensagens não lidas.
+
+
+## Versão 0.5.4 — Chat Aberto Pré-Pedido
+
+- Cria atendimento antes da compra usando `support_conversations` e `support_messages`.
+- Cliente logado pode conversar com a Forja mesmo sem pedido.
+- Sala do Criador mistura contatos de pedidos e dúvidas pré-pedido no mesmo painel estilo WhatsApp Web.
+- Chat minimizado passa a funcionar também sem pedido.
+- Menu e badges de conversas contam mensagens de pedidos e atendimentos.
+- Migration: `013_0_5_4_open_pre_order_chat.sql`.

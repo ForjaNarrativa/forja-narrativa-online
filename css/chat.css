@@ -479,3 +479,87 @@
     bottom: 12px;
   }
 }
+
+/* Forja 0.5.3 — notificações internas */
+.contactTopLine {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.chatUnreadBadge,
+.navUnreadBadge {
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1;
+  color: #120908;
+  background: linear-gradient(135deg, #f6d477, #d2973e);
+  box-shadow: 0 0 0 1px rgba(255, 231, 167, 0.24), 0 0 24px rgba(210, 151, 62, 0.35);
+  flex: 0 0 auto;
+}
+
+.contactItem.hasUnread {
+  border-color: rgba(246, 212, 119, 0.62);
+  background:
+    radial-gradient(circle at top right, rgba(246, 212, 119, 0.16), transparent 34%),
+    rgba(210, 151, 62, 0.1);
+}
+
+.contactItem.hasUnread small:first-of-type {
+  color: rgba(255, 244, 214, 0.86);
+  font-weight: 800;
+}
+
+.forjaChatBubble {
+  position: relative;
+}
+
+.forjaChatBubble.hasUnread {
+  animation: forjaChatPulse 1.8s ease-in-out infinite;
+}
+
+.widgetBadge {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  pointer-events: none;
+}
+
+@keyframes forjaChatPulse {
+  0%, 100% { transform: translateY(0); box-shadow: 0 24px 56px rgba(0, 0, 0, 0.48), 0 0 35px rgba(210, 151, 62, 0.18); }
+  50% { transform: translateY(-3px); box-shadow: 0 28px 64px rgba(0, 0, 0, 0.52), 0 0 44px rgba(210, 151, 62, 0.34); }
+}
+
+
+/* Forja 0.5.4 — atendimento pré-pedido */
+.contactItem.preOrderContact {
+  border-color: rgba(110, 182, 255, 0.22);
+  background:
+    radial-gradient(circle at top left, rgba(110, 182, 255, 0.12), transparent 42%),
+    rgba(255, 255, 255, 0.045);
+}
+
+.contactItem.preOrderContact:hover,
+.contactItem.preOrderContact.active {
+  border-color: rgba(138, 92, 255, 0.52);
+  background:
+    radial-gradient(circle at top left, rgba(110, 182, 255, 0.18), transparent 42%),
+    rgba(111, 66, 193, 0.12);
+}
+
+.chatStatus[data-type="warning"] {
+  color: rgba(255, 218, 142, 0.92);
+}
+
+.chatStatus[data-type="error"] {
+  color: rgba(255, 134, 134, 0.92);
+}

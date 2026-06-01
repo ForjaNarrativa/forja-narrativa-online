@@ -1,6 +1,6 @@
 {
   "name": "forja-narrativa-online",
-  "version": "0.5.2",
+  "version": "0.5.4",
   "private": true,
   "scripts": {
     "typecheck": "tsc --noEmit",

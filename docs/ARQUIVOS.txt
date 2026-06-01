@@ -130,3 +130,15 @@ supabase/migrations/008_0_4_3_client_account_profiles.sql
 - Novos pedidos e mensagens de cliente tentam enviar aviso externo sem bloquear o fluxo.
 - Adicionada documentação `docs/DISCORD_NOTIFICACOES.md`.
 - Adicionada migration marcador `011_0_5_1_discord_notifications.sql`.
+
+0.5.3:
+- supabase/migrations/012_0_5_3_internal_notifications.sql
+- js/chat-shared.js
+- js/chat-admin.js
+- js/chat.js
+- js/chat-widget.js
+- js/nav.js
+- css/chat.css
+- css/style.css
+
+- supabase/migrations/013_0_5_4_open_pre_order_chat.sql — chat aberto pré-pedido.

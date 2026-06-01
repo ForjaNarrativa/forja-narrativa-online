@@ -213,7 +213,116 @@ function bindAuthStateWatcher() {
   navAlreadyBoundAuth = true;
   db.auth.onAuthStateChange(() => {
     renderMainNav();
+setInterval(async () => {
+  const session = await getCurrentSession();
+  if (!session || !mainNav) return;
+  const isAdmin = await checkIsAdmin(session.user);
+  refreshNavChatBadge(session, isAdmin);
+}, 12000);
   });
+}
+
+
+async function getNavUnreadChatTotal(session, isAdmin) {
+  const db = getForjaDB();
+  if (!db || !session) return 0;
+
+  const role = isAdmin ? "admin" : "cliente";
+  const oppositeRole = isAdmin ? "cliente" : "admin";
+  let total = 0;
+
+  try {
+    let ordersQuery = db.from("orders").select("id");
+    if (!isAdmin) ordersQuery = ordersQuery.eq("user_id", session.user.id);
+
+    const { data: orders } = await ordersQuery.limit(500);
+    const orderIds = (orders || []).map((order) => order.id);
+
+    if (orderIds.length) {
+      const { data: reads } = await db
+        .from("order_chat_reads")
+        .select("order_id,last_read_at")
+        .in("order_id", orderIds)
+        .eq("user_id", session.user.id)
+        .eq("reader_role", role);
+
+      const readMap = (reads || []).reduce((acc, item) => {
+        acc[item.order_id] = item.last_read_at;
+        return acc;
+      }, {});
+
+      const { data: messages } = await db
+        .from("order_messages")
+        .select("order_id,sender_role,created_at")
+        .in("order_id", orderIds)
+        .eq("sender_role", oppositeRole)
+        .order("created_at", { ascending: false });
+
+      total += (messages || []).reduce((sum, message) => {
+        const readTime = readMap[message.order_id] ? new Date(readMap[message.order_id]).getTime() : 0;
+        return new Date(message.created_at).getTime() > readTime ? sum + 1 : sum;
+      }, 0);
+    }
+
+    let supportQuery = db.from("support_conversations").select("id");
+    if (!isAdmin) supportQuery = supportQuery.eq("user_id", session.user.id);
+    const { data: supportConversations } = await supportQuery.limit(500);
+    const supportIds = (supportConversations || []).map((item) => item.id);
+
+    if (supportIds.length) {
+      const { data: supportReads } = await db
+        .from("support_chat_reads")
+        .select("conversation_id,last_read_at")
+        .in("conversation_id", supportIds)
+        .eq("user_id", session.user.id)
+        .eq("reader_role", role);
+
+      const supportReadMap = (supportReads || []).reduce((acc, item) => {
+        acc[item.conversation_id] = item.last_read_at;
+        return acc;
+      }, {});
+
+      const { data: supportMessages } = await db
+        .from("support_messages")
+        .select("conversation_id,sender_role,created_at")
+        .in("conversation_id", supportIds)
+        .eq("sender_role", oppositeRole)
+        .order("created_at", { ascending: false });
+
+      total += (supportMessages || []).reduce((sum, message) => {
+        const readTime = supportReadMap[message.conversation_id] ? new Date(supportReadMap[message.conversation_id]).getTime() : 0;
+        return new Date(message.created_at).getTime() > readTime ? sum + 1 : sum;
+      }, 0);
+    }
+
+    return total;
+  } catch (error) {
+    console.warn("Contador de conversas indisponível.", error);
+    return total;
+  }
+}
+
+function applyNavChatBadge(total, isAdmin) {
+  const count = Number(total || 0);
+  const href = isAdmin ? "chat-admin.html" : "chat.html";
+  const anchors = Array.from(mainNav.querySelectorAll(`a[href="${href}"]`));
+
+  anchors.forEach((anchor) => {
+    anchor.querySelector(".navUnreadBadge")?.remove();
+    anchor.classList.toggle("hasNavUnread", count > 0);
+    if (count > 0) {
+      const badge = document.createElement("span");
+      badge.className = "navUnreadBadge";
+      badge.textContent = count > 99 ? "99+" : String(count);
+      anchor.appendChild(badge);
+    }
+  });
+}
+
+async function refreshNavChatBadge(session, isAdmin) {
+  if (!session) return;
+  const total = await getNavUnreadChatTotal(session, isAdmin);
+  applyNavChatBadge(total, isAdmin);
 }
 
 async function renderMainNav() {
@@ -235,6 +344,14 @@ async function renderMainNav() {
   bindMobileMenu();
   bindLogoutButtons();
   bindAuthStateWatcher();
+  refreshNavChatBadge(session, isAdmin);
 }
 
+
 renderMainNav();
+setInterval(async () => {
+  const session = await getCurrentSession();
+  if (!session || !mainNav) return;
+  const isAdmin = await checkIsAdmin(session.user);
+  refreshNavChatBadge(session, isAdmin);
+}, 12000);
