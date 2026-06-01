@@ -10,6 +10,8 @@ const fallbackPublicPages = [
 
 let publicPages = fallbackPublicPages;
 let navAlreadyBoundAuth = false;
+let navChatBadgeInterval = null;
+let navRendering = false;
 
 const OWNER_ADMIN_EMAILS = ["forjanarrativa5790@gmail.com"];
 
@@ -66,8 +68,6 @@ async function getCurrentSession() {
 async function checkIsAdmin(user) {
   const db = getForjaDB();
   if (!db || !user) return false;
-
-  // A conta oficial da Forja sempre recebe a entrada da Sala do Criador no menu.
   if (isOwnerAdminEmail(user.email)) return true;
 
   try {
@@ -123,22 +123,16 @@ function getSessionLinks(session, isAdmin, mobile = false) {
 
 function renderAuthLinks(session, isAdmin, mobile = false) {
   const links = getSessionLinks(session, isAdmin, mobile).map(createNavLink).join("");
-
   if (!session) return links;
-
   return `${links}<button id="${mobile ? "mobileLogoutBtn" : "navLogoutBtn"}" class="navLogoutBtn" type="button">Sair da conta</button>`;
 }
 
 function renderMobileMenu(session, isAdmin) {
   return `
     <button id="mobileMenuBtn" class="mobileMenuBtn" type="button" aria-label="Abrir menu" aria-expanded="false">
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span>
     </button>
-
     <div id="mobileMenuOverlay" class="mobileMenuOverlay" aria-hidden="true"></div>
-
     <aside id="mobileMenuPanel" class="mobileMenuPanel" aria-hidden="true">
       <div class="mobileMenuHeader">
         <div>
@@ -147,7 +141,6 @@ function renderMobileMenu(session, isAdmin) {
         </div>
         <button id="mobileMenuClose" class="mobileMenuClose" type="button" aria-label="Fechar menu">×</button>
       </div>
-
       <div class="mobileMenuLinks">
         ${renderPublicLinks()}
         ${renderAuthLinks(session, isAdmin, true)}
@@ -161,7 +154,6 @@ function bindMobileMenu() {
   const panel = document.getElementById("mobileMenuPanel");
   const overlay = document.getElementById("mobileMenuOverlay");
   const close = document.getElementById("mobileMenuClose");
-
   if (!btn || !panel || !overlay || !close) return;
 
   function openMenu() {
@@ -185,7 +177,6 @@ function bindMobileMenu() {
   btn.addEventListener("click", openMenu);
   close.addEventListener("click", closeMenu);
   overlay.addEventListener("click", closeMenu);
-
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeMenu();
   });
@@ -206,23 +197,6 @@ function bindLogoutButtons() {
   });
 }
 
-function bindAuthStateWatcher() {
-  const db = getForjaDB();
-  if (!db || navAlreadyBoundAuth) return;
-
-  navAlreadyBoundAuth = true;
-  db.auth.onAuthStateChange(() => {
-    renderMainNav();
-setInterval(async () => {
-  const session = await getCurrentSession();
-  if (!session || !mainNav) return;
-  const isAdmin = await checkIsAdmin(session.user);
-  refreshNavChatBadge(session, isAdmin);
-}, 12000);
-  });
-}
-
-
 async function getNavUnreadChatTotal(session, isAdmin) {
   const db = getForjaDB();
   if (!db || !session) return 0;
@@ -234,7 +208,6 @@ async function getNavUnreadChatTotal(session, isAdmin) {
   try {
     let ordersQuery = db.from("orders").select("id");
     if (!isAdmin) ordersQuery = ordersQuery.eq("user_id", session.user.id);
-
     const { data: orders } = await ordersQuery.limit(500);
     const orderIds = (orders || []).map((order) => order.id);
 
@@ -303,6 +276,7 @@ async function getNavUnreadChatTotal(session, isAdmin) {
 }
 
 function applyNavChatBadge(total, isAdmin) {
+  if (!mainNav) return;
   const count = Number(total || 0);
   const href = isAdmin ? "chat-admin.html" : "chat.html";
   const anchors = Array.from(mainNav.querySelectorAll(`a[href="${href}"]`));
@@ -325,33 +299,64 @@ async function refreshNavChatBadge(session, isAdmin) {
   applyNavChatBadge(total, isAdmin);
 }
 
-async function renderMainNav() {
-  if (!mainNav) return;
-
-  publicPages = await loadPublicPages();
-
-  const session = await getCurrentSession();
-  const isAdmin = session ? await checkIsAdmin(session.user) : false;
-
-  mainNav.innerHTML = `
-    <div class="desktopNavLinks">
-      ${renderPublicLinks()}
-      ${renderAuthLinks(session, isAdmin, false)}
-    </div>
-    ${renderMobileMenu(session, isAdmin)}
-  `;
-
-  bindMobileMenu();
-  bindLogoutButtons();
-  bindAuthStateWatcher();
-  refreshNavChatBadge(session, isAdmin);
-}
-
-
-renderMainNav();
-setInterval(async () => {
+async function refreshNavBadgeFromCurrentSession() {
   const session = await getCurrentSession();
   if (!session || !mainNav) return;
   const isAdmin = await checkIsAdmin(session.user);
-  refreshNavChatBadge(session, isAdmin);
-}, 12000);
+  await refreshNavChatBadge(session, isAdmin);
+}
+
+function startNavChatBadgeTimer() {
+  if (navChatBadgeInterval) return;
+  navChatBadgeInterval = setInterval(refreshNavBadgeFromCurrentSession, 12000);
+}
+
+function stopNavChatBadgeTimer() {
+  if (!navChatBadgeInterval) return;
+  clearInterval(navChatBadgeInterval);
+  navChatBadgeInterval = null;
+}
+
+function bindAuthStateWatcher() {
+  const db = getForjaDB();
+  if (!db || navAlreadyBoundAuth) return;
+  navAlreadyBoundAuth = true;
+  db.auth.onAuthStateChange(() => {
+    stopNavChatBadgeTimer();
+    renderMainNav();
+  });
+}
+
+async function renderMainNav() {
+  if (!mainNav || navRendering) return;
+  navRendering = true;
+
+  try {
+    publicPages = await loadPublicPages();
+    const session = await getCurrentSession();
+    const isAdmin = session ? await checkIsAdmin(session.user) : false;
+
+    mainNav.innerHTML = `
+      <div class="desktopNavLinks">
+        ${renderPublicLinks()}
+        ${renderAuthLinks(session, isAdmin, false)}
+      </div>
+      ${renderMobileMenu(session, isAdmin)}
+    `;
+
+    bindMobileMenu();
+    bindLogoutButtons();
+    bindAuthStateWatcher();
+
+    if (session) {
+      await refreshNavChatBadge(session, isAdmin);
+      startNavChatBadgeTimer();
+    } else {
+      stopNavChatBadgeTimer();
+    }
+  } finally {
+    navRendering = false;
+  }
+}
+
+renderMainNav();

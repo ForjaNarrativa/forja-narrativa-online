@@ -12,6 +12,7 @@
   let unreadCounts = {};
   let supportUnread = 0;
   let poll = null;
+  let unreadPoll = null;
   let channel = null;
   let globalOrderChannel = null;
   let globalSupportChannel = null;
@@ -70,6 +71,23 @@
     return data;
   }
 
+  async function fetchExistingSupportConversation() {
+    if (!session?.user?.id) return null;
+    const { data, error } = await forjaDB
+      .from("support_conversations")
+      .select("*")
+      .eq("user_id", session.user.id)
+      .neq("status", "fechada")
+      .order("updated_at", { ascending: false })
+      .limit(1);
+
+    if (error) {
+      console.warn("Atendimento pré-pedido ainda não disponível.", error);
+      return null;
+    }
+    return data?.[0] || null;
+  }
+
   async function ensureSupport() {
     if (!supportConversation) supportConversation = await fetchOrCreateSupportConversation(session.user);
     return supportConversation;
@@ -77,7 +95,7 @@
 
   async function refreshUnreadCounts() {
     orders = await loadOrders();
-    supportConversation = await ensureSupport();
+    if (!supportConversation) supportConversation = await fetchExistingSupportConversation();
     unreadCounts = {};
     supportUnread = 0;
 
@@ -120,14 +138,17 @@
   }
 
   async function chooseConversation(preferredKey = "") {
-    await ensureSupport();
     if (!orders.length) orders = await loadOrders();
+    if (!supportConversation) supportConversation = await fetchExistingSupportConversation();
 
     const parsed = parseConversationKey(preferredKey);
     if (parsed.type === "order" && orders.some((item) => item.id === parsed.id)) return parsed;
-    if (parsed.type === "support" && parsed.id === supportConversation.id) return parsed;
+    if (parsed.type === "support" && supportConversation?.id && parsed.id === supportConversation.id) return parsed;
 
-    return { type: "support", id: supportConversation.id };
+    if (orders.length) return { type: "order", id: orders[0].id };
+
+    const support = await ensureSupport();
+    return { type: "support", id: support.id };
   }
 
   async function refreshMiniMessages({ markRead = true } = {}) {
@@ -190,13 +211,11 @@
 
   function startGlobalWatch() {
     if (!forjaDB.channel) return;
-
     if (!globalOrderChannel) {
       globalOrderChannel = forjaDB.channel("forja-widget-order-chat-global")
         .on("postgres_changes", { event: "INSERT", schema: "public", table: "order_messages" }, refreshUnreadCounts)
         .subscribe();
     }
-
     if (!globalSupportChannel) {
       globalSupportChannel = forjaDB.channel("forja-widget-support-chat-global")
         .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_messages" }, refreshUnreadCounts)
@@ -211,7 +230,6 @@
     if (await isAdmin(session.user)) return;
 
     buildWidget();
-
     document.getElementById("forjaChatBubble").addEventListener("click", openMiniPanel);
     document.getElementById("miniChatClose").addEventListener("click", closeMiniPanel);
 
@@ -243,7 +261,7 @@
 
     await refreshUnreadCounts();
     startGlobalWatch();
-    setInterval(refreshUnreadCounts, 10000);
+    if (!unreadPoll) unreadPoll = setInterval(refreshUnreadCounts, 10000);
 
     if (localStorage.getItem("forjaChatMiniOpen") === "true") {
       openMiniPanel();

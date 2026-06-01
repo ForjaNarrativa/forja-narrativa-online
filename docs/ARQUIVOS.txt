@@ -142,3 +142,15 @@ supabase/migrations/008_0_4_3_client_account_profiles.sql
 - css/style.css
 
 - supabase/migrations/013_0_5_4_open_pre_order_chat.sql — chat aberto pré-pedido.
+
+
+0.5.5 — Polimento do Chat e Sinos da Forja
+- js/nav.js — timer único para badge de chat, sem intervalos duplicados.
+- js/chat-widget.js — widget não cria atendimento vazio automaticamente.
+- js/chat-admin.js — filtros de conversa e fechamento de atendimentos pré-pedido.
+- chat-admin.html — filtros visuais e ação de fechar atendimento.
+- css/chat.css — estilos dos filtros, status e ações de atendimento.
+- docs/DISCORD_NOTIFICACOES.md — URL correta do Supabase documentada.
+- supabase/migrations/014_0_5_5_chat_polish_and_support_security.sql — realtime e policies reforçadas do suporte.
+
+- supabase/migrations/015_0_5_6_central_forja.sql — status e organização da Central da Forja.

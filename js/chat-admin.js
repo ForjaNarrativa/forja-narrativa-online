@@ -8,6 +8,13 @@ const adminMessages = document.getElementById("adminMessages");
 const adminChatForm = document.getElementById("adminChatForm");
 const adminMessageInput = document.getElementById("adminMessageInput");
 const adminChatLogoutBtn = document.getElementById("adminChatLogoutBtn");
+const adminCloseSupportBtn = document.getElementById("adminCloseSupportBtn");
+const adminMarkRespondedBtn = document.getElementById("adminMarkRespondedBtn");
+const adminWaitClientBtn = document.getElementById("adminWaitClientBtn");
+const adminReopenSupportBtn = document.getElementById("adminReopenSupportBtn");
+const adminArchiveSupportBtn = document.getElementById("adminArchiveSupportBtn");
+const adminChatStats = document.getElementById("adminChatStats");
+const adminChatFilterButtons = Array.from(document.querySelectorAll("[data-chat-filter]"));
 
 const ADMIN_CHAT_OWNER_EMAILS = ["forjanarrativa5790@gmail.com"];
 
@@ -23,6 +30,7 @@ let adminContactsPoll = null;
 let lastMessagesByKey = {};
 let unreadCountsByKey = {};
 let messageDatesByKey = {};
+let adminConversationFilter = "active";
 
 function normalizeAdminChatEmail(email) {
   return String(email || "").trim().toLowerCase();
@@ -64,34 +72,160 @@ async function requireAdminChatAccess() {
   return true;
 }
 
-function buildConversationItems() {
-  const orderItems = adminChatOrders.map((order) => ({
-    type: "order",
-    id: order.id,
-    key: orderConversationKey(order.id),
-    title: order.client_name || "Cliente sem nome",
-    subtitle: order.package_name || "Pedido",
-    meta: `${order.client_email || "sem e-mail"} • ${order.status || "sem status"}`,
-    search: [order.client_name, order.client_email, order.package_name, order.status, order.character_idea].join(" "),
-    sort: new Date(messageDatesByKey[orderConversationKey(order.id)] || order.updated_at || order.created_at || 0).getTime(),
-    href: `admin.html#pedido-${order.id}`
-  }));
 
-  const supportItems = adminSupportConversations.map((conversation) => ({
-    type: "support",
-    id: conversation.id,
-    key: supportConversationKey(conversation.id),
-    title: conversation.client_name || conversation.client_email || "Dúvida pré-pedido",
-    subtitle: conversation.subject || "Dúvida pré-pedido",
-    meta: `${conversation.client_email || "sem e-mail"} • ${conversation.status || "aberta"}`,
-    search: [conversation.client_name, conversation.client_email, conversation.subject, conversation.status].join(" "),
-    sort: new Date(messageDatesByKey[supportConversationKey(conversation.id)] || conversation.updated_at || conversation.created_at || 0).getTime(),
-    href: "admin.html"
-  }));
+function normalizeConversationStatus(status) {
+  return String(status || "").trim().toLowerCase().replaceAll(" ", "_");
+}
+
+function getSupportStatusLabel(status) {
+  const normalized = normalizeConversationStatus(status);
+  const labels = {
+    aberta: "Aberta",
+    aguardando_forja: "Aguardando Forja",
+    aguardando_cliente: "Aguardando cliente",
+    respondida: "Respondida",
+    fechada: "Fechada",
+    arquivada: "Arquivada"
+  };
+  return labels[normalized] || status || "Aberta";
+}
+
+function getOrderWorkflowStatus(order, key) {
+  const unread = Number(unreadCountsByKey[key] || 0);
+  if (unread > 0) return "aguardando_forja";
+  const last = lastMessagesByKey[key];
+  if (last?.sender_role === "admin") return "aguardando_cliente";
+  if (last?.sender_role === "cliente") return "aguardando_forja";
+  return normalizeConversationStatus(order.status || "aberta");
+}
+
+function getSupportWorkflowStatus(conversation, key) {
+  const raw = normalizeConversationStatus(conversation.status || "aberta");
+  if (["fechada", "arquivada", "aguardando_forja", "aguardando_cliente", "respondida"].includes(raw)) return raw;
+  const unread = Number(unreadCountsByKey[key] || 0);
+  if (unread > 0) return "aguardando_forja";
+  const last = lastMessagesByKey[key];
+  if (last?.sender_role === "admin") return "aguardando_cliente";
+  if (last?.sender_role === "cliente") return "aguardando_forja";
+  return "aberta";
+}
+
+function getWorkflowLabel(status) {
+  const labels = {
+    aberta: "Aberta",
+    aguardando_forja: "Aguardando Forja",
+    aguardando_cliente: "Aguardando cliente",
+    respondida: "Respondida",
+    fechada: "Fechada",
+    arquivada: "Arquivada",
+    entregue: "Entregue",
+    cancelado: "Cancelado",
+    teste: "Teste",
+    arquivado: "Arquivado"
+  };
+  return labels[normalizeConversationStatus(status)] || String(status || "Aberta");
+}
+
+function isConversationActive(item) {
+  const status = normalizeConversationStatus(item.workflowStatus || item.status);
+  if (["fechada", "arquivada", "arquivado", "cancelado", "entregue"].includes(status)) return false;
+  return true;
+}
+
+function buildChatStats(items) {
+  const stats = {
+    unread: 0,
+    order: 0,
+    support: 0,
+    waitingForja: 0,
+    waitingClient: 0,
+    closed: 0,
+    archived: 0
+  };
+
+  items.forEach((item) => {
+    const unread = Number(unreadCountsByKey[item.key] || 0);
+    const status = normalizeConversationStatus(item.workflowStatus || item.status);
+    stats.unread += unread;
+    if (item.type === "order") stats.order += 1;
+    if (item.type === "support") stats.support += 1;
+    if (status === "aguardando_forja") stats.waitingForja += 1;
+    if (status === "aguardando_cliente") stats.waitingClient += 1;
+    if (status === "fechada") stats.closed += 1;
+    if (status === "arquivada" || status === "arquivado") stats.archived += 1;
+  });
+
+  return stats;
+}
+
+function renderChatStats(items) {
+  if (!adminChatStats) return;
+  const stats = buildChatStats(items);
+  adminChatStats.innerHTML = `
+    <span title="Mensagens pendentes">${stats.unread} não lidas</span>
+    <span title="Dúvidas pré-pedido">${stats.support} pré-pedido</span>
+    <span title="Conversas de pedidos">${stats.order} pedidos</span>
+    <span title="Precisam de resposta da Forja">${stats.waitingForja} aguardando Forja</span>
+  `;
+}
+
+function buildConversationItems() {
+  const orderItems = adminChatOrders.map((order) => {
+    const key = orderConversationKey(order.id);
+    const workflowStatus = getOrderWorkflowStatus(order, key);
+    return {
+      type: "order",
+      id: order.id,
+      key,
+      title: order.client_name || "Cliente sem nome",
+      subtitle: order.package_name || "Pedido",
+      status: order.status || "sem status",
+      workflowStatus,
+      workflowLabel: getWorkflowLabel(workflowStatus),
+      meta: `${order.client_email || "sem e-mail"} • ${order.status || "sem status"}`,
+      search: [order.client_name, order.client_email, order.package_name, order.status, workflowStatus, order.character_idea].join(" "),
+      sort: new Date(messageDatesByKey[key] || order.updated_at || order.created_at || 0).getTime(),
+      href: `admin.html#pedido-${order.id}`
+    };
+  });
+
+  const supportItems = adminSupportConversations.map((conversation) => {
+    const key = supportConversationKey(conversation.id);
+    const workflowStatus = getSupportWorkflowStatus(conversation, key);
+    return {
+      type: "support",
+      id: conversation.id,
+      key,
+      title: conversation.client_name || conversation.client_email || "Dúvida pré-pedido",
+      subtitle: conversation.subject || "Dúvida pré-pedido",
+      status: conversation.status || "aberta",
+      workflowStatus,
+      workflowLabel: getWorkflowLabel(workflowStatus),
+      meta: `${conversation.client_email || "sem e-mail"} • ${getSupportStatusLabel(conversation.status || "aberta")}`,
+      search: [conversation.client_name, conversation.client_email, conversation.subject, conversation.status, workflowStatus].join(" "),
+      sort: new Date(messageDatesByKey[key] || conversation.updated_at || conversation.created_at || 0).getTime(),
+      href: "admin.html"
+    };
+  });
+
+  const allItems = [...supportItems, ...orderItems];
+  renderChatStats(allItems);
 
   const term = adminChatSearch.value.trim().toLowerCase();
-  return [...supportItems, ...orderItems]
+  return allItems
     .filter((item) => !term || item.search.toLowerCase().includes(term))
+    .filter((item) => {
+      const unread = Number(unreadCountsByKey[item.key] || 0);
+      const status = normalizeConversationStatus(item.workflowStatus || item.status);
+      const rawStatus = normalizeConversationStatus(item.status);
+      if (adminConversationFilter === "active") return isConversationActive(item);
+      if (adminConversationFilter === "all") return true;
+      if (adminConversationFilter === "order") return item.type === "order";
+      if (adminConversationFilter === "support") return item.type === "support";
+      if (adminConversationFilter === "unread") return unread > 0;
+      if (adminConversationFilter === "arquivada") return status === "arquivada" || rawStatus === "arquivada" || status === "arquivado" || rawStatus === "arquivado";
+      return status === adminConversationFilter || rawStatus === adminConversationFilter;
+    })
     .sort((a, b) => b.sort - a.sort);
 }
 
@@ -106,7 +240,7 @@ function renderContacts() {
   const items = buildConversationItems();
 
   if (items.length === 0) {
-    adminContactsList.innerHTML = `<div class="chatStatus">Nenhuma conversa encontrada.</div>`;
+    adminContactsList.innerHTML = `<div class="chatStatus">Nenhuma conversa encontrada para este filtro.</div>`;
     updateDocumentChatBadge(Object.values(unreadCountsByKey).reduce((sum, count) => sum + Number(count || 0), 0));
     return;
   }
@@ -116,13 +250,15 @@ function renderContacts() {
     const activeClass = item.key === (selectedAdminConversation.type ? `${selectedAdminConversation.type}:${selectedAdminConversation.id}` : "") ? "active" : "";
     const unreadClass = unread > 0 ? "hasUnread" : "";
     const typeLabel = item.type === "support" ? "Pré-pedido" : "Pedido";
+    const workflowClass = `workflow-${normalizeConversationStatus(item.workflowStatus || item.status)}`;
     return `
-      <button type="button" class="contactItem ${activeClass} ${unreadClass} ${item.type === "support" ? "preOrderContact" : ""}" data-conversation-key="${item.key}">
+      <button type="button" class="contactItem ${activeClass} ${unreadClass} ${workflowClass} ${item.type === "support" ? "preOrderContact" : ""}" data-conversation-key="${item.key}">
         <span class="contactTopLine">
           <strong>${chatEscapeHTML(item.title)}</strong>
           ${createUnreadBadge(unread, "mensagens pendentes")}
         </span>
         <span>${chatEscapeHTML(typeLabel)} • ${chatEscapeHTML(item.subtitle)}</span>
+        <em class="contactStatusTag">${chatEscapeHTML(item.workflowLabel || item.status)}</em>
         <small>${chatEscapeHTML(getLastMessagePreview(item.key))}</small>
         <small>${chatFormatDate(messageDatesByKey[item.key] || item.sort)} • ${chatEscapeHTML(item.meta)}</small>
       </button>
@@ -266,9 +402,24 @@ async function selectAdminConversation(value) {
   adminConversationMeta.textContent = item.meta;
   adminConversationTitle.textContent = `${item.title} — ${item.subtitle}`;
   adminOpenOrderLink.href = item.href;
-  adminOpenOrderLink.textContent = parsed.type === "order" ? "Ver pedido" : "Ver painel";
-  adminMessageInput.disabled = false;
-  adminChatForm.querySelector("button").disabled = false;
+  adminOpenOrderLink.textContent = parsed.type === "order" ? "Ir para pedido relacionado" : "Voltar ao painel";
+
+  const status = normalizeConversationStatus(item.status);
+  const lockedSupport = parsed.type === "support" && ["fechada", "arquivada"].includes(status);
+  const isSupport = parsed.type === "support";
+
+  adminCloseSupportBtn.hidden = !isSupport || lockedSupport;
+  adminMarkRespondedBtn.hidden = !isSupport || lockedSupport;
+  adminWaitClientBtn.hidden = !isSupport || lockedSupport;
+  adminArchiveSupportBtn.hidden = !isSupport || status === "arquivada";
+  adminReopenSupportBtn.hidden = !isSupport || !lockedSupport;
+
+  adminMessageInput.disabled = lockedSupport;
+  adminChatForm.querySelector("button").disabled = lockedSupport;
+
+  if (lockedSupport) {
+    setAdminChatStatus(status === "arquivada" ? "Atendimento arquivado. Reabra se precisar continuar." : "Atendimento fechado. Reabra se precisar continuar.", "info");
+  }
 
   await removeChatSubscription(adminChatChannel);
   if (adminChatPoll) clearInterval(adminChatPoll);
@@ -305,7 +456,21 @@ async function renderAdminConversation({ markRead = false } = {}) {
         unreadCountsByKey[orderConversationKey(selectedAdminConversation.id)] = 0;
       }
     } else {
-      setAdminChatStatus("Dúvida pré-pedido aberta. Ajude a pessoa a escolher o melhor caminho.");
+      const currentSupport = adminSupportConversations.find((item) => item.id === selectedAdminConversation.id);
+      const supportStatus = normalizeConversationStatus(currentSupport?.status || "aberta");
+      if (supportStatus === "fechada") {
+        setAdminChatStatus("Atendimento fechado. O histórico continua disponível.", "info");
+      } else if (supportStatus === "arquivada") {
+        setAdminChatStatus("Atendimento arquivado. Reabra para continuar a conversa.", "info");
+      } else if (supportStatus === "aguardando_cliente") {
+        setAdminChatStatus("Resposta enviada. Agora a Forja aguarda o retorno do cliente.", "success");
+      } else if (supportStatus === "aguardando_forja") {
+        setAdminChatStatus("Cliente respondeu. Esta conversa precisa da atenção da Forja.", "warning");
+      } else if (supportStatus === "respondida") {
+        setAdminChatStatus("Atendimento marcado como respondido.", "success");
+      } else {
+        setAdminChatStatus("Dúvida pré-pedido aberta. Ajude a pessoa a escolher o melhor caminho.");
+      }
       const messages = await fetchSupportMessages(selectedAdminConversation.id);
       adminMessages.innerHTML = renderChatMessages(messages, "admin");
       if (markRead) {
@@ -352,6 +517,14 @@ function startAdminGlobalNotifications() {
 
 adminChatSearch.addEventListener("input", renderContacts);
 
+adminChatFilterButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    adminConversationFilter = button.dataset.chatFilter || "all";
+    adminChatFilterButtons.forEach((item) => item.classList.toggle("active", item === button));
+    renderContacts();
+  });
+});
+
 adminChatForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!selectedAdminConversation.id) return;
@@ -377,9 +550,52 @@ adminChatForm.addEventListener("submit", async (event) => {
   }
 
   adminMessageInput.value = "";
+  if (selectedAdminConversation.type === "support") {
+    await updateSupportConversationStatus("aguardando_cliente", { silent: true });
+  }
   await renderAdminConversation({ markRead: true });
   await refreshAdminContacts({ keepSelection: true });
 });
+
+
+async function updateSupportConversationStatus(status, { silent = false } = {}) {
+  if (selectedAdminConversation.type !== "support" || !selectedAdminConversation.id) return false;
+
+  const { error } = await forjaDB
+    .from("support_conversations")
+    .update({ status })
+    .eq("id", selectedAdminConversation.id);
+
+  if (error) {
+    console.error(error);
+    setAdminChatStatus("Não foi possível atualizar o atendimento. Confira as policies do Supabase.", "error");
+    return false;
+  }
+
+  if (!silent) setAdminChatStatus(`Atendimento marcado como ${getWorkflowLabel(status)}.`, "success");
+  await refreshAdminContacts({ keepSelection: true });
+  await renderAdminConversation({ markRead: true });
+  return true;
+}
+
+function bindSupportStatusAction(button, status, confirmMessage = "") {
+  button?.addEventListener("click", async () => {
+    if (confirmMessage && !window.confirm(confirmMessage)) return;
+    const previousText = button.textContent;
+    button.disabled = true;
+    button.textContent = "Salvando...";
+    await updateSupportConversationStatus(status);
+    button.disabled = false;
+    button.textContent = previousText;
+  });
+}
+
+bindSupportStatusAction(adminMarkRespondedBtn, "respondida");
+bindSupportStatusAction(adminWaitClientBtn, "aguardando_cliente");
+bindSupportStatusAction(adminReopenSupportBtn, "aberta");
+bindSupportStatusAction(adminArchiveSupportBtn, "arquivada", "Arquivar este atendimento? Ele sairá do fluxo ativo, mas continuará no histórico.");
+bindSupportStatusAction(adminCloseSupportBtn, "fechada", "Fechar este atendimento pré-pedido? Ele ficará no histórico, mas sairá do fluxo aberto.");
+
 
 adminChatLogoutBtn.addEventListener("click", async () => {
   await forjaDB.auth.signOut();

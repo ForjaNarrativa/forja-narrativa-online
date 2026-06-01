@@ -196,6 +196,7 @@ async function fetchOrCreateSupportConversation(user) {
     .select("*")
     .eq("user_id", user.id)
     .neq("status", "fechada")
+    .neq("status", "arquivada")
     .order("updated_at", { ascending: false })
     .limit(1);
 

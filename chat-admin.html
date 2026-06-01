@@ -50,6 +50,20 @@
         <div class="chatContactsHeader">
           <strong>Contatos</strong>
           <input id="adminChatSearch" type="text" placeholder="Buscar cliente, e-mail, pacote ou dúvida..." />
+          <div id="adminChatStats" class="chatStatsBar" aria-live="polite"></div>
+          <div class="chatFilterBar" aria-label="Filtros de conversa">
+            <button type="button" class="active" data-chat-filter="active">Ativos</button>
+            <button type="button" data-chat-filter="all">Todos</button>
+            <button type="button" data-chat-filter="order">Pedidos</button>
+            <button type="button" data-chat-filter="support">Pré-pedido</button>
+            <button type="button" data-chat-filter="unread">Não lidas</button>
+            <button type="button" data-chat-filter="aguardando_forja">Aguardando Forja</button>
+            <button type="button" data-chat-filter="aguardando_cliente">Aguardando cliente</button>
+            <button type="button" data-chat-filter="aberta">Abertas</button>
+            <button type="button" data-chat-filter="respondida">Respondidas</button>
+            <button type="button" data-chat-filter="fechada">Fechadas</button>
+            <button type="button" data-chat-filter="arquivada">Arquivadas</button>
+          </div>
         </div>
         <div id="adminContactsList" class="contactsList">
           <div class="chatStatus">Carregando contatos...</div>
@@ -62,7 +76,14 @@
             <span id="adminConversationMeta">Nenhum contato selecionado</span>
             <strong id="adminConversationTitle">Escolha uma conversa</strong>
           </div>
-          <a id="adminOpenOrderLink" href="admin.html" class="ghostChatLink">Ver pedido</a>
+          <div class="conversationActions">
+            <button id="adminMarkRespondedBtn" class="ghostChatLink" type="button" hidden>Marcar respondida</button>
+            <button id="adminWaitClientBtn" class="ghostChatLink" type="button" hidden>Aguardar cliente</button>
+            <button id="adminReopenSupportBtn" class="ghostChatLink" type="button" hidden>Reabrir</button>
+            <button id="adminArchiveSupportBtn" class="ghostChatLink warningChatAction" type="button" hidden>Arquivar</button>
+            <button id="adminCloseSupportBtn" class="ghostChatLink dangerChatAction" type="button" hidden>Fechar atendimento</button>
+            <a id="adminOpenOrderLink" href="admin.html" class="ghostChatLink">Ver pedido</a>
+          </div>
         </div>
 
         <div id="adminChatStatus" class="chatStatus">Selecione um contato para abrir a conversa.</div>

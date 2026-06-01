@@ -27,6 +27,20 @@ function setClientChatStatus(message, type = "info") {
   clientChatStatus.dataset.type = type;
 }
 
+function normalizeClientSupportStatus(status) {
+  return String(status || "").trim().toLowerCase().replaceAll(" ", "_");
+}
+
+function getClientSupportStatusText(status) {
+  const normalized = normalizeClientSupportStatus(status);
+  if (normalized === "aguardando_cliente") return "A Forja respondeu. Veja se precisa mandar mais detalhes.";
+  if (normalized === "aguardando_forja") return "A Forja recebeu sua mensagem. Aguardando resposta.";
+  if (normalized === "respondida") return "Atendimento respondido pela Forja.";
+  if (normalized === "fechada") return "Atendimento fechado. Você pode abrir uma nova dúvida quando precisar.";
+  if (normalized === "arquivada") return "Atendimento arquivado. Abra uma nova dúvida se quiser continuar.";
+  return "Atendimento aberto. Tire dúvidas antes de comprar ou peça ajuda para escolher um pacote.";
+}
+
 async function requireChatLogin() {
   const { data, error } = await forjaDB.auth.getSession();
   if (error || !data.session) {
@@ -117,7 +131,7 @@ function renderClientOrderSelect() {
     entries.push({
       key: supportConversationKey(supportConversation.id),
       sort: getSupportSortDate(),
-      label: `Dúvidas com a Forja${supportUnreadCount > 0 ? ` • ${supportUnreadCount} nova${supportUnreadCount > 1 ? "s" : ""}` : ""}`
+      label: `Dúvidas com a Forja • ${getClientSupportStatusText(supportConversation.status).replace(/\.$/, "")}${supportUnreadCount > 0 ? ` • ${supportUnreadCount} nova${supportUnreadCount > 1 ? "s" : ""}` : ""}`
     });
   }
 
@@ -221,7 +235,11 @@ async function renderClientConversation({ markRead = false } = {}) {
         clientUnreadCounts[selectedConversation.id] = 0;
       }
     } else {
-      setClientChatStatus("Atendimento aberto. Tire dúvidas antes de comprar ou peça ajuda para escolher um pacote.");
+      const supportStatus = normalizeClientSupportStatus(supportConversation?.status || "aberta");
+      const locked = ["fechada", "arquivada"].includes(supportStatus);
+      setClientChatStatus(getClientSupportStatusText(supportStatus), locked ? "warning" : "info");
+      clientMessageInput.disabled = locked;
+      clientChatForm.querySelector("button").disabled = locked;
       const messages = await fetchSupportMessages(selectedConversation.id);
       clientMessages.innerHTML = renderChatMessages(messages, "cliente");
       if (markRead) {
@@ -295,6 +313,10 @@ clientChatForm.addEventListener("submit", async (event) => {
     console.error(result.error);
     setClientChatStatus("A mensagem não foi enviada. Tente novamente.", "error");
     return;
+  }
+
+  if (selectedConversation.type === "support") {
+    await refreshClientConversations({ keepSelection: true });
   }
 
   if (window.notifyForjaDiscord) {

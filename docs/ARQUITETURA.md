@@ -1,6 +1,6 @@
 # Arquitetura — Forja Narrativa Online
 
-Versão interna: **0.4.5 — histórico do pedido**.
+Versão interna: **0.5.6 — Polimento do Chat e Sinos da Forja**.
 
 ## Páginas públicas
 
@@ -368,3 +368,25 @@ O chat usa `order_messages`:
 - Chat minimizado passa a funcionar também sem pedido.
 - Menu e badges de conversas contam mensagens de pedidos e atendimentos.
 - Migration: `013_0_5_4_open_pre_order_chat.sql`.
+
+
+## Versão 0.5.6 — Polimento do Chat e Sinos da Forja
+
+- Corrigida a URL documentada do Supabase nas notificações do Discord.
+- Corrigido `nav.js` para evitar timers duplicados de badges de chat.
+- Ajustado `chat-widget.js` para não criar atendimento pré-pedido vazio apenas por visita ao site.
+- O atendimento pré-pedido só é criado quando o cliente abre/enviа conversa quando não possui pedido válido para usar.
+- A central de conversas ganhou filtros: Todos, Pedidos, Pré-pedido, Não lidas, Abertas, Respondidas e Fechadas.
+- A Sala do Criador ganhou botão para fechar atendimento pré-pedido.
+- Criada a migration `014_0_5_5_chat_polish_and_support_security.sql`.
+- A migration 014 adiciona realtime para tabelas de suporte e reforça policies de mensagens/leitura do pré-pedido.
+
+
+## 0.5.6 — Central da Forja
+
+- Central de conversas ganhou filtro Ativos como visão principal.
+- Filtros ampliados: Todos, Pedidos, Pré-pedido, Não lidas, Aguardando Forja, Aguardando cliente, Abertas, Respondidas, Fechadas e Arquivadas.
+- Conversas pré-pedido podem ser marcadas como respondidas, aguardando cliente, reabertas, fechadas ou arquivadas.
+- Contadores rápidos mostram não lidas, pré-pedido, pedidos e atendimentos aguardando Forja.
+- Cliente recebe textos de estado mais claros no chat.
+- Migration 015 registra novos status e reforça policies de atendimentos fechados/arquivados.
