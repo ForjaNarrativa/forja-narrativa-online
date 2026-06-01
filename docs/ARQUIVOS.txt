@@ -121,3 +121,12 @@ supabase/migrations/008_0_4_3_client_account_profiles.sql
 - content/markdown/chat.md
 - content/markdown/chat-admin.md
 - supabase/migrations/010_0_5_0_order_chat.sql
+
+
+## 0.5.1 — Sinos da Forja
+
+- Adicionada Edge Function `forja-discord-alert` para avisos no Discord.
+- Adicionado helper `js/notifications/discord-alerts.js`.
+- Novos pedidos e mensagens de cliente tentam enviar aviso externo sem bloquear o fluxo.
+- Adicionada documentação `docs/DISCORD_NOTIFICACOES.md`.
+- Adicionada migration marcador `011_0_5_1_discord_notifications.sql`.

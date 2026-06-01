@@ -133,7 +133,7 @@
       const message = input.value.trim();
       if (!message) return;
 
-      const { error } = await sendOrderMessage({
+      const { data: sentMessage, error } = await sendOrderMessage({
         orderId: order.id,
         userId: session.user.id,
         role: "cliente",
@@ -141,6 +141,13 @@
       });
 
       if (!error) {
+        if (window.notifyForjaDiscord) {
+          window.notifyForjaDiscord("client_message", {
+            orderId: order.id,
+            messageId: sentMessage?.id,
+            messagePreview: message
+          });
+        }
         input.value = "";
         await refreshMiniMessages();
       }

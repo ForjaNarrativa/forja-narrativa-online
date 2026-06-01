@@ -1,0 +1,12 @@
+-- Forja Narrativa Online 0.5.1 — Sinos da Forja
+-- Esta versão não precisa alterar tabelas para funcionar.
+-- A integração com Discord é feita por Edge Function em:
+-- supabase/functions/forja-discord-alert/index.ts
+--
+-- Passos no Supabase:
+-- 1. Criar/configurar o secret DISCORD_WEBHOOK_URL com a URL do webhook do Discord.
+-- 2. Opcional: configurar FORJA_SITE_URL com a URL publicada da Forja.
+-- 3. Deploy da função forja-discord-alert.
+--
+-- Este arquivo existe para registrar a versão no histórico de migrations.
+select 'Forja 0.5.1 — Sinos da Forja: sem alterações SQL obrigatórias.' as info;

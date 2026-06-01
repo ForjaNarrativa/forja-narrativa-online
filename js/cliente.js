@@ -278,6 +278,15 @@ async function handleClientOrderSubmit(event) {
 
   await logClientOrderCreated(createdOrder, `Pedido criado no pacote ${packageNameValue}.`);
 
+  if (window.notifyForjaDiscord) {
+    window.notifyForjaDiscord("new_order", {
+      orderId: createdOrder.id,
+      packageName: createdOrder.package_name,
+      clientName: createdOrder.client_name,
+      messagePreview: characterIdeaValue
+    });
+  }
+
   clearDraft();
   setClientMessage(`Pedido enviado com sucesso! ${selectedPackage?.name ? `${selectedPackage.name} foi enviado para a Forja.` : "Ele já está em Meus Pedidos."}`, "success");
   clientOrderForm.reset();

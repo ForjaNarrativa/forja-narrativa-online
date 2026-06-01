@@ -328,3 +328,21 @@ O chat usa `order_messages`:
 - admin só pode inserir mensagens como `sender_role = 'admin'`;
 - ambos podem ler as conversas permitidas por RLS;
 - mensagens não são editadas, apenas enviadas em sequência.
+
+
+## 0.5.1 — Sinos da Forja
+
+- Adicionada Edge Function `forja-discord-alert` para avisos no Discord.
+- Adicionado helper `js/notifications/discord-alerts.js`.
+- Novos pedidos e mensagens de cliente tentam enviar aviso externo sem bloquear o fluxo.
+- Adicionada documentação `docs/DISCORD_NOTIFICACOES.md`.
+- Adicionada migration marcador `011_0_5_1_discord_notifications.sql`.
+
+
+## Versão 0.5.2 — Sinos da Forja via Vercel
+
+- Substitui chamada direta para Supabase Edge Function por `/api/discord-alert`.
+- Adiciona `api/discord-alert.js` como Vercel Function.
+- Mantém a URL do Discord Webhook protegida em variável de ambiente da Vercel.
+- Evita depender do `supabase link`/deploy de Edge Functions para notificações.
+- O endpoint verifica a sessão Supabase do cliente antes de mandar aviso ao Discord.

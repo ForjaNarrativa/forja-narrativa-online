@@ -118,7 +118,7 @@ clientChatForm.addEventListener("submit", async (event) => {
   button.disabled = true;
   button.textContent = "Enviando...";
 
-  const { error } = await sendOrderMessage({
+  const { data: sentMessage, error } = await sendOrderMessage({
     orderId: selectedOrderId,
     userId: clientChatSession.user.id,
     role: "cliente",
@@ -132,6 +132,14 @@ clientChatForm.addEventListener("submit", async (event) => {
     console.error(error);
     setClientChatStatus("A mensagem não foi enviada. Tente novamente.", "error");
     return;
+  }
+
+  if (window.notifyForjaDiscord) {
+    window.notifyForjaDiscord("client_message", {
+      orderId: selectedOrderId,
+      messageId: sentMessage?.id,
+      messagePreview: message
+    });
   }
 
   clientMessageInput.value = "";
